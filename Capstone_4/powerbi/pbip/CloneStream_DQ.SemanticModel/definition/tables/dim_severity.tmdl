@@ -1,0 +1,32 @@
+table dim_severity
+	lineageTag: 3004cfd3-79ad-5af9-b974-6ed96430dc85
+
+	column 'severity'
+		dataType: string
+		lineageTag: 8885bfcf-6bc8-5f54-95f6-5a6a6926eddd
+		summarizeBy: none
+		sourceColumn: severity
+		sortByColumn: 'sort'
+
+	column 'sort'
+		dataType: int64
+		isHidden
+		lineageTag: 0b12d716-ccb7-5f79-85f6-8906c8cece47
+		summarizeBy: none
+		sourceColumn: sort
+
+	column 'weight'
+		dataType: int64
+		lineageTag: fed7a555-123f-58b5-b424-cd046659ab05
+		summarizeBy: none
+		sourceColumn: weight
+
+	partition 'dim_severity-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\dim_severity.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"severity", type text}, {"sort", Int64.Type}, {"weight", Int64.Type}}, "en-US")
+			in
+			    Typed

@@ -1,0 +1,100 @@
+table fact_audit_log
+	lineageTag: 7864be00-9e6a-5dae-93a5-9401fa58b1d3
+
+	column 'run_id'
+		dataType: string
+		lineageTag: 81ca7fcd-2813-5c00-877f-748dcfb78e7b
+		summarizeBy: none
+		sourceColumn: run_id
+
+	column 'job'
+		dataType: string
+		lineageTag: bab72293-cc10-50f3-a0f6-dc3e6ca1b502
+		summarizeBy: none
+		sourceColumn: job
+
+	column 'git_sha'
+		dataType: string
+		lineageTag: 038c95d7-a12e-56c2-aafc-3f4667ffb4df
+		summarizeBy: none
+		sourceColumn: git_sha
+
+	column 'started_utc'
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 806710e2-b2a4-5a2d-91f6-6c697487ed75
+		summarizeBy: none
+		sourceColumn: started_utc
+
+	column 'ended_utc'
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 0d3faac7-eb5b-5be8-a497-8176f9d8cb1b
+		summarizeBy: none
+		sourceColumn: ended_utc
+
+	column 'seconds'
+		dataType: double
+		lineageTag: f53eb087-4faa-5337-9b25-354faa199a70
+		summarizeBy: none
+		sourceColumn: seconds
+
+	column 'status'
+		dataType: string
+		lineageTag: d5dc753c-4ec2-5e1c-98c9-141de626653c
+		summarizeBy: none
+		sourceColumn: status
+
+	column 'rows_in'
+		dataType: int64
+		lineageTag: 66c8a34a-06b0-5bc3-be24-bcb89d432313
+		summarizeBy: none
+		sourceColumn: rows_in
+
+	column 'rows_out'
+		dataType: double
+		lineageTag: 829df881-9ac6-55ab-9960-e5f78e0da9a7
+		summarizeBy: none
+		sourceColumn: rows_out
+
+	column 'rules_run'
+		dataType: double
+		lineageTag: 66a07d27-14a4-5d1f-a20f-7a1d342c5d8e
+		summarizeBy: none
+		sourceColumn: rules_run
+
+	column 'rules_failed'
+		dataType: double
+		lineageTag: f1d09f55-0ab7-5ebe-bac5-6a23e7045469
+		summarizeBy: none
+		sourceColumn: rules_failed
+
+	column 'rules_passed'
+		dataType: double
+		lineageTag: 46a6c43e-8a5d-5fe6-9899-043c9b8c7fa4
+		summarizeBy: none
+		sourceColumn: rules_passed
+
+	column 'outputs_digest'
+		dataType: string
+		lineageTag: 963f0cc8-9987-5bf6-862e-de984f949b99
+		summarizeBy: none
+		sourceColumn: outputs_digest
+
+	column 'output_files'
+		dataType: int64
+		lineageTag: ecc309e2-693a-5b52-9ea2-65677387cd4f
+		summarizeBy: none
+		sourceColumn: output_files
+
+	partition 'fact_audit_log-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_audit_log.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"run_id", type text}, {"job", type text}, {"git_sha", type text}, {"seconds", type number}, {"status", type text}, {"rows_in", Int64.Type}, {"rows_out", type number}, {"rules_run", type number}, {"rules_failed", type number}, {"rules_passed", type number}, {"outputs_digest", type text}, {"output_files", Int64.Type}}, "en-US"),
+			    Dt0 = Table.TransformColumns(Typed, {{"started_utc", each try DateTimeZone.RemoveZone(DateTimeZone.FromText(_)) otherwise null, type nullable datetime}}),
+			    Dt1 = Table.TransformColumns(Dt0, {{"ended_utc", each try DateTimeZone.RemoveZone(DateTimeZone.FromText(_)) otherwise null, type nullable datetime}})
+			in
+			    Dt1

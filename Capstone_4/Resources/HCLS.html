@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Data Crisis - Executive Brief</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Aptos', Calibri, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1B2227;
+            background: #FFFFFF;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #FFFFFF;
+        }
+
+        .header {
+            border-bottom: 3px solid #075056;
+            padding-bottom: 30px;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            font-size: 11px;
+            font-weight: 600;
+            color: #075056;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #075056;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .metadata {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .meta-item {
+            padding: 10px;
+            background: #F9F9F9;
+            border-radius: 4px;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #075056;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .meta-value {
+            color: #1B2227;
+        }
+
+        h2 {
+            font-size: 28px;
+            color: #075056;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #075056;
+        }
+
+        h3 {
+            font-size: 16px;
+            color: #024879;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #1B2227;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #1B2227;
+            line-height: 1.7;
+        }
+
+        .highlight-box {
+            background: #F0F7FF;
+            padding: 20px;
+            border-left: 4px solid #024879;
+            border-radius: 4px;
+            margin: 20px 0;
+            color: #1B2227;
+        }
+
+        .critical-box {
+            background: #FEE2E2;
+            padding: 20px;
+            border-left: 4px solid #EF4444;
+            border-radius: 4px;
+            margin: 20px 0;
+            color: #7F1D1D;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+
+        th {
+            background: #075056;
+            color: #FFFFFF;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #E0E0E0;
+            color: #1B2227;
+        }
+
+        tr:nth-child(even) {
+            background: #F9F9F9;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: #F0F7FF;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #075056;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #075056;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #1B2227;
+            font-weight: 500;
+        }
+
+        .phase-box {
+            background: #F9F9F9;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #024879;
+            border-radius: 4px;
+        }
+
+        .phase-title {
+            font-weight: 700;
+            color: #024879;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .phase-content {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #1B2227;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 2px solid #E0E0E0;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stat-row {
+                grid-template-columns: 1fr;
+            }
+            .metadata {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">PERFICIENT HEALTHCARE ANALYTICS</div>
+            <div class="title">Healthcare Data Crisis</div>
+            <div class="subtitle">Executive Brief & Proof of Concept Plan</div>
+
+            <div class="metadata">
+                <div class="meta-item">
+                    <span class="meta-label">Organization:</span>
+                    <span class="meta-value">CloneStream Healthcare Network</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Date:</span>
+                    <span class="meta-value">October 2026</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="meta-value">Active Incident - Day 1</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Severity:</span>
+                    <span class="meta-value">Critical (Finance &amp; Compliance)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <h2>Executive Summary</h2>
+        <p>
+            CloneStream Healthcare has discovered data integrity issues affecting healthcare records across insurance claims,
+            medical records, and patient visit data. Approximately 36% of claims lack approved amounts, 30% of visits do not link to
+            appointments, and 19% of medical records are missing prescribed medications. The total revenue reconciliation gap is estimated
+            between $500K and $2.3M, with legal and compliance implications.
+        </p>
+        <p>
+            This brief outlines the crisis scope, immediate response strategy, and a phased POC plan to identify root causes,
+            quantify financial impact, and deploy automated prevention measures through Git-versioned, tested, and CI/CD-validated solutions.
+        </p>
+
+        <!-- The Crisis -->
+        <h2>The Crisis: What We Found</h2>
+        <div class="stat-row">
+            <div class="stat-box">
+                <div class="stat-number">90/250</div>
+                <div class="stat-label">Insurance Claims Missing Approved Amounts (36%)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">123/400</div>
+                <div class="stat-label">Patient Visits Missing Appointment Links (30%)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">$2.3M vs $1.8M</div>
+                <div class="stat-label">Claims Submitted vs Paid (Gap: $500K)</div>
+            </div>
+        </div>
+
+        <h3>Confirmed Issues</h3>
+        <table>
+            <tr>
+                <th>Table / Dataset</th>
+                <th>Issue</th>
+                <th>Count</th>
+                <th>Impact</th>
+            </tr>
+            <tr>
+                <td>Insurance_Claims</td>
+                <td>Missing approved_amount</td>
+                <td>90 of 250 (36%)</td>
+                <td>CRITICAL - Finance cannot reconcile; revenue gap unclear</td>
+            </tr>
+            <tr>
+                <td>Visits</td>
+                <td>Missing appointment link</td>
+                <td>123 of 400 (30%)</td>
+                <td>CRITICAL - Cannot trace patient journey; billing mismatch</td>
+            </tr>
+            <tr>
+                <td>Medical_Records</td>
+                <td>Missing prescribed_meds</td>
+                <td>40 of 206 (19%)</td>
+                <td>CRITICAL - Patient safety risk; medication history lost</td>
+            </tr>
+        </table>
+
+        <p style="font-style: italic; color: #666; margin-top: 20px;">
+            Note: These are the confirmed issues identified in Phase 1 discovery. Additional data quality problems may exist across other tables and will be audited as part of the full scope assessment.
+        </p>
+
+        <!-- Stakeholder Impact -->
+        <h2>Stakeholder Impact</h2>
+
+        <h3>Finance Department</h3>
+        <div class="critical-box">
+            <strong>Issue:</strong> Claims reconciliation broken. Submitted $2.3M, received $1.8M, cannot explain the gap.
+            <br><br><strong>Risk:</strong> CFO needs confidence in numbers for board reporting. Auditors arrive Friday.
+            <br><br><strong>Deadline:</strong> Wednesday 5 PM
+        </div>
+
+        <h3>Compliance &amp; Legal</h3>
+        <div class="critical-box">
+            <strong>Issue:</strong> Hospital may be overcharging patients if claims do not match billing amounts.
+            <br><br><strong>Risk:</strong> Regulatory violation if systematically overcharging.
+            <br><br><strong>Deadline:</strong> Friday (auditors on-site)
+        </div>
+
+        <h3>Patient Care Team</h3>
+        <div class="highlight-box">
+            <strong>Issue:</strong> Doctors cannot see complete medication histories; follow-up plans are incomplete.
+            <br><br><strong>Risk:</strong> Patient safety issue if medications or follow-ups are missed.
+        </div>
+
+        <!-- The POC Plan -->
+        <h2>Proof of Concept Plan: 5 Phases</h2>
+        <p>
+            The response is broken into 5 phases. Each phase has clear outputs, decision gates, and escalation paths.
+            All solutions must be versioned in Git, tested, and validated through CI/CD pipelines before production deployment.
+        </p>
+
+        <div class="phase-box">
+            <div class="phase-title">Phase 1: Understand the Scope</div>
+            <div class="phase-content">
+                <strong>Objective:</strong> Get exact numbers on what is broken and why it matters.
+                <br><br><strong>Work:</strong> Query all 20 tables, count missing values, identify broken relationships, rank by impact.
+                <br><br><strong>Deliverables:</strong> Data quality scorecard (table, count, %, impact), timeline of when issues started.
+                <br><br><strong>Implementation:</strong> Code versioned in Git | Tests written | CI/CD validates | Automated job runs daily
+                <br><br><strong>Success Metric:</strong> Stakeholders understand the scope; no surprises later.
+            </div>
+        </div>
+
+        <div class="phase-box">
+            <div class="phase-title">Phase 2: Diagnose Root Cause</div>
+            <div class="phase-content">
+                <strong>Objective:</strong> Determine where the data broke (app? API? Database? ETL?).
+                <br><br><strong>Work:</strong> Interview claims team, check ETL logs, trace data flow, timeline the break.
+                <br><br><strong>Deliverables:</strong> Root cause hypothesis for each issue, diagnostic steps to validate, evidence.
+                <br><br><strong>Implementation:</strong> Code in Git | Tests validate hypothesis | CI/CD triggers diagnostic jobs
+                <br><br><strong>Success Metric:</strong> Know exactly what broke and where to fix it.
+            </div>
+        </div>
+
+        <div class="phase-box">
+            <div class="phase-title">Phase 3: Finance Reconciliation Solution</div>
+            <div class="phase-content">
+                <strong>Objective:</strong> Give Finance exact numbers so they can report to CFO.
+                <br><br><strong>Work:</strong> Build reconciliation report showing claims submitted vs. claims paid, approved amounts, and flag missing data.
+                <br><br><strong>Deliverables:</strong> Excel file (Claims Summary sheet + Customer Detail sheet), confidence levels (certain vs. estimated).
+                <br><br><strong>Implementation:</strong> Code in Git | Unit and integration tests | CI/CD validates | Scheduled daily export
+                <br><br><strong>Success Metric:</strong> Finance presents to board with confidence.
+            </div>
+        </div>
+
+        <div class="phase-box">
+            <div class="phase-title">Phase 4: Validate &amp; Plan Remediation</div>
+            <div class="phase-content">
+                <strong>Objective:</strong> Plan the fix and get sign-off before touching production.
+                <br><br><strong>Work:</strong> Senior DE reviews root cause diagnosis, plans backfill/recovery approach, designs Databricks job for automation.
+                <br><br><strong>Deliverables:</strong> Remediation plan (backfill strategy, validation approach, rollback plan), Databricks job design.
+                <br><br><strong>Implementation:</strong> All code reviewed | Tested in staging | Approval gated before production
+                <br><br><strong>Success Metric:</strong> Senior DE confirms plan is safe; ready for implementation.
+            </div>
+        </div>
+
+        <div class="phase-box">
+            <div class="phase-title">Phase 5: Audit-Ready Documentation</div>
+            <div class="phase-content">
+                <strong>Objective:</strong> Prepare hospital to present findings to auditors.
+                <br><br><strong>Work:</strong> Compile data quality evidence, document root causes, show remediation plan, update Power BI dashboard.
+                <br><br><strong>Deliverables:</strong> Data Quality Scorecard, Root Cause Report, Remediation Plan and Prevention measures, Updated Power BI Dashboard.
+                <br><br><strong>Implementation:</strong> All metrics via scheduled jobs | Power BI auto-refreshes daily | Audit trail logged
+                <br><br><strong>Success Metric:</strong> Auditors see transparency, planning, and prevention; continuous monitoring in place.
+            </div>
+        </div>
+
+        <!-- Key Questions -->
+        <h2>Key Questions to Resolve</h2>
+        <ol>
+            <li><strong>Where did the data break?</strong> Is it an app bug, API bug, database corruption, or ETL bug? Different layers require different fixes.</li>
+            <li><strong>When did it start?</strong> Last week? Last month? Year-to-date? The timeline determines scope of impact.</li>
+            <li><strong>How many more issues exist?</strong> We have identified 3 critical problems. Are there others in the remaining tables?</li>
+            <li><strong>Is this systemic?</strong> Does one broken process affect everything, or are there multiple independent failures?</li>
+            <li><strong>Can we fix it?</strong> Can we backfill from the insurance company, or is data permanently lost?</li>
+            <li><strong>Should we refund?</strong> If we overcharged customers, which ones, and how much should we refund?</li>
+            <li><strong>What is the confidence level?</strong> Can we state with certainty that Finance numbers are correct, or must we flag estimates?</li>
+            <li><strong>How do we prevent this?</strong> Where should validation checks live, and what checks would catch this automatically?</li>
+        </ol>
+
+        <!-- Engineering Practices -->
+        <h2>Engineering Practices: Code, Testing, Automation</h2>
+
+        <h3>Version Control &amp; Git Workflow</h3>
+        <p>All code must be versioned in Git: SQL queries, Databricks notebooks, Python scripts, Power BI configurations, and job definitions.</p>
+        <div class="highlight-box">
+            Each commit should be meaningful and documented. Code reviews are required before merging to main branch.
+        </div>
+
+        <h3>Automated Triggers &amp; Scheduling</h3>
+        <p>Data quality checks and reconciliation reports must run automatically, not manually:</p>
+        <ul>
+            <li>Phase 1 Job: Data quality audit runs daily at 2 AM UTC</li>
+            <li>Phase 3 Job: Financial reconciliation runs weekly</li>
+            <li>Phase 5 Job: Audit metrics calculated nightly; Power BI auto-refreshes</li>
+        </ul>
+        <div class="highlight-box">
+            No manual Excel files. No manual query runs. Everything is automated, scheduled, and versioned.
+        </div>
+
+        <h3>Testing Requirements</h3>
+        <p>Before deploying any code, all tests must pass:</p>
+        <ul>
+            <li>Unit Tests: Test individual functions with expected inputs and outputs</li>
+            <li>Data Validation Tests: Verify data quality checks catch actual problems</li>
+            <li>Integration Tests: Verify end-to-end flow works correctly</li>
+            <li>Regression Tests: Ensure fixes do not break previously working functionality</li>
+        </ul>
+
+        <h3>CI/CD Pipeline Requirements</h3>
+        <p>Every code change triggers automated validation in this sequence:</p>
+        <ol>
+            <li><strong>Code Quality:</strong> Linting, syntax check, standards compliance</li>
+            <li><strong>Unit Tests:</strong> All tests pass or build fails</li>
+            <li><strong>Data Tests:</strong> Data quality checks run on test dataset</li>
+            <li><strong>Integration Tests:</strong> Full pipeline runs end-to-end on non-production data</li>
+            <li><strong>Approval Gate:</strong> Manual review and sign-off before production deployment</li>
+            <li><strong>Deploy to Production:</strong> Automated job registration, scheduling, Power BI updates</li>
+        </ol>
+        <div class="highlight-box">
+            No code reaches production without passing all stages. Failed tests = failed build = no deployment.
+        </div>
+
+        <h3>Monitoring &amp; Alerts</h3>
+        <p>After deployment, automated jobs must be monitored:</p>
+        <ul>
+            <li>Job success/failure notifications (Slack, email)</li>
+            <li>Data quality threshold alerts (if missing data exceeds 5%, alert Finance)</li>
+            <li>Performance monitoring (reconciliation should complete in under 5 minutes)</li>
+            <li>Audit trail logging (who ran what, when, with what results)</li>
+        </ul>
+
+        <!-- Success Criteria -->
+        <h2>Success Criteria</h2>
+        <ul>
+            <li><strong>Finance knows the revenue gap with confidence.</strong> They present to CFO with numbers they can defend.</li>
+            <li><strong>Compliance has audit-ready evidence.</strong> Auditors see transparency, root cause analysis, and prevention plan.</li>
+            <li><strong>Patient care resumes.</strong> Doctors can see medication history and follow-up plans.</li>
+            <li><strong>Future incidents are prevented.</strong> Automated job flags data quality issues daily.</li>
+            <li><strong>Engineering understands the lesson.</strong> Team knows where validation should live and why it matters.</li>
+        </ul>
+
+        <!-- Evaluation Rubric -->
+        <h2>Evaluation Rubric</h2>
+        <p>Students are graded on discovery, technical execution, and communication across 5 dimensions. Each dimension is scored 0-4 points.</p>
+
+        <h3>1. Data Discovery &amp; Analysis (0-4 points)</h3>
+        <table>
+            <tr>
+                <th>Score</th>
+                <th>Criteria</th>
+            </tr>
+            <tr>
+                <td><strong>4</strong></td>
+                <td>Discovered all 3 confirmed issues plus identified additional data quality problems in other tables. Provided row counts, percentages, and impact assessment for each. Showed timeline of when issues started.</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td>Discovered all 3 confirmed issues with accurate row counts and percentages. Attempted to find additional issues but identified fewer than 2 more problems.</td>
+            </tr>
+            <tr>
+                <td><strong>2</strong></td>
+                <td>Discovered 2 of the 3 confirmed issues with reasonable accuracy. Missing one major issue or significant undercount on row counts.</td>
+            </tr>
+            <tr>
+                <td><strong>1</strong></td>
+                <td>Discovered 1 of the 3 confirmed issues or discovered all 3 but with major inaccuracies in counts or impact.</td>
+            </tr>
+            <tr>
+                <td><strong>0</strong></td>
+                <td>Did not discover confirmed issues or analysis is fundamentally flawed.</td>
+            </tr>
+        </table>
+
+        <h3>2. Tool Selection &amp; Technical Implementation (0-4 points)</h3>
+        <table>
+            <tr>
+                <th>Score</th>
+                <th>Criteria</th>
+            </tr>
+            <tr>
+                <td><strong>4</strong></td>
+                <td>Selected appropriate tools (SQL for aggregation, Python for complex logic, Databricks for automation) based on task requirements. Justified choices based on data complexity and stakeholder needs. All code runs without errors.</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td>Selected tools that work but could be optimized. Minor logic errors that do not affect final results. Code runs with minor fixes needed.</td>
+            </tr>
+            <tr>
+                <td><strong>2</strong></td>
+                <td>Selected tools that partially solve the problem but show gaps in understanding when to use which tool. Code has errors that require significant rework.</td>
+            </tr>
+            <tr>
+                <td><strong>1</strong></td>
+                <td>Selected tools randomly or used wrong tool for the task. Code does not run or produces incorrect results.</td>
+            </tr>
+            <tr>
+                <td><strong>0</strong></td>
+                <td>No technical implementation attempted or completely non-functional code.</td>
+            </tr>
+        </table>
+
+        <h3>3. Git Versioning, Testing, &amp; CI/CD Pipeline (0-4 points)</h3>
+        <table>
+            <tr>
+                <th>Score</th>
+                <th>Criteria</th>
+            </tr>
+            <tr>
+                <td><strong>4</strong></td>
+                <td>All code versioned in Git with meaningful commit messages. Unit tests, data validation tests, and integration tests present and passing. Full CI/CD pipeline documented with 6 stages (code quality, unit tests, data tests, integration, approval, production). Monitoring and alerts configured.</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td>Code in Git with mostly meaningful commits. Unit and integration tests present; data validation tests incomplete. CI/CD pipeline defined with 4-5 stages. Basic monitoring configured.</td>
+            </tr>
+            <tr>
+                <td><strong>2</strong></td>
+                <td>Code in Git but commit messages are vague. Unit tests only; integration tests missing. CI/CD pipeline partially defined or only 3 stages. Minimal monitoring.</td>
+            </tr>
+            <tr>
+                <td><strong>1</strong></td>
+                <td>Code in Git but poor commit hygiene. Few or no tests. CI/CD pipeline not documented. No monitoring.</td>
+            </tr>
+            <tr>
+                <td><strong>0</strong></td>
+                <td>Code not in Git or no testing/CI/CD approach attempted.</td>
+            </tr>
+        </table>
+
+        <h3>4. Business Logic &amp; Stakeholder Communication (0-4 points)</h3>
+        <table>
+            <tr>
+                <th>Score</th>
+                <th>Criteria</th>
+            </tr>
+            <tr>
+                <td><strong>4</strong></td>
+                <td>Clearly articulated business impact for each stakeholder (Finance, Compliance, Patient Care). Provided reconciliation report with confidence levels (certain vs. estimated). Explained trade-offs and assumptions. Presented findings in language appropriate for non-technical stakeholders.</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td>Addressed most stakeholder concerns. Provided reconciliation numbers but confidence levels unclear. Explained some trade-offs. Generally clear communication with minor jargon issues.</td>
+            </tr>
+            <tr>
+                <td><strong>2</strong></td>
+                <td>Addressed at least one stakeholder concern. Provided raw numbers without context or confidence levels. Limited explanation of trade-offs. Communication unclear in places.</td>
+            </tr>
+            <tr>
+                <td><strong>1</strong></td>
+                <td>Minimal attention to business context. Numbers provided without interpretation. Heavy jargon; difficult for non-technical audience to understand.</td>
+            </tr>
+            <tr>
+                <td><strong>0</strong></td>
+                <td>No business logic or stakeholder communication attempted.</td>
+            </tr>
+        </table>
+
+        <h3>5. Problem-Solving Under Pressure &amp; Judgment (0-4 points)</h3>
+        <table>
+            <tr>
+                <th>Score</th>
+                <th>Criteria</th>
+            </tr>
+            <tr>
+                <td><strong>4</strong></td>
+                <td>Demonstrated strategic thinking by prioritizing Finance deadline (Wednesday), then Compliance deadline (Friday). Showed judgment in deciding what is "good enough" vs. perfect. Identified risks and mitigation strategies. Made clear trade-off decisions and explained why.</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td>Addressed both critical deadlines but prioritization unclear. Showed some risk awareness. Most judgment calls explained.</td>
+            </tr>
+            <tr>
+                <td><strong>2</strong></td>
+                <td>Addressed one critical deadline. Minimal risk discussion. Some judgment calls made without clear rationale.</td>
+            </tr>
+            <tr>
+                <td><strong>1</strong></td>
+                <td>Slow or unclear approach to urgent deadlines. Did not identify or address risks. Judgment calls appear arbitrary.</td>
+            </tr>
+            <tr>
+                <td><strong>0</strong></td>
+                <td>No consideration of business pressures or decision-making demonstrated.</td>
+            </tr>
+        </table>
+
+        <h3>Scoring Summary</h3>
+        <table>
+            <tr>
+                <th>Total Score (out of 20)</th>
+                <th>Grade</th>
+            </tr>
+            <tr>
+                <td>18-20</td>
+                <td>A: Capstone Quality - Ready for client delivery</td>
+            </tr>
+            <tr>
+                <td>16-17</td>
+                <td>B: Strong Work - Minor gaps, easily addressed</td>
+            </tr>
+            <tr>
+                <td>14-15</td>
+                <td>C: Acceptable - Significant areas for improvement</td>
+            </tr>
+            <tr>
+                <td>12-13</td>
+                <td>D: Below Standard - Major rework needed</td>
+            </tr>
+            <tr>
+                <td>Below 12</td>
+                <td>F: Not Passing - Fundamental gaps in execution</td>
+            </tr>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Confidential - For Internal Use Only</p>
+            <p>Perficient Global AI First Academy | Healthcare Data Engineering Capstone</p>
+        </div>
+    </div>
+</body>
+</html>

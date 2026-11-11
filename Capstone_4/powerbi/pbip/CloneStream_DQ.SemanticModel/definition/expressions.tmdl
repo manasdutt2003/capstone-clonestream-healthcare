@@ -1,0 +1,2 @@
+expression CsvFolder = "C:\Users\manas.dutt\Downloads\GGTP_CHN_DP_SEP_26\Projects\Individual\Manas Dutt\Week 4\Capstone 3\outputs\powerbi" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 935569ce-193b-5752-ac34-3fdae3c4a76d

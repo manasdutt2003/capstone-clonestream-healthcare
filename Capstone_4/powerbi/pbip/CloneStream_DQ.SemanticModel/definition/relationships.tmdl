@@ -1,0 +1,15 @@
+relationship ae684821-fae3-5e3e-8331-f115866ae0f1
+	fromColumn: fact_scorecard.'severity'
+	toColumn: dim_severity.'severity'
+
+relationship a81a0196-a6be-50a3-ae21-5f36a7171d68
+	fromColumn: fact_recon_buckets.'bucket'
+	toColumn: dim_bucket.'bucket'
+
+relationship d68b80ff-68de-5b46-8900-7da8cdce887f
+	fromColumn: fact_claims.'bucket'
+	toColumn: dim_bucket.'bucket'
+
+relationship 8a8366bd-6741-5bb6-8af9-a328e92491d2
+	fromColumn: fact_timeline.'rule_id'
+	toColumn: fact_scorecard.'rule_id'

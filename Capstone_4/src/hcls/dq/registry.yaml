@@ -1,0 +1,354 @@
+# Custom (hand-written) data-quality rules. Generic rules (null, FK, format, domain, bounds, dates) are generated in rules.py.
+# Each rule points at a SQL file in sql/dq/ that returns one row per record: yr, row_num, failed, in_scope.
+rules:
+- id: C01
+  table: Insurance_Claims
+  column: approved_amount
+  name: approved_amount missing
+  check_type: completeness
+  severity: Critical
+  stakeholder: Finance
+  impact: CRITICAL - Finance cannot state approved revenue for these claims; the reconciliation gap cannot be closed.
+  sql_file: C01.sql
+- id: C02
+  table: Visits
+  column: appointment_id
+  name: appointment_id missing (visit not linked to an appointment)
+  check_type: completeness
+  severity: Critical
+  stakeholder: Compliance
+  impact: CRITICAL - patient journey cannot be traced from appointment to visit to bill.
+  sql_file: C02.sql
+- id: C03
+  table: Medical_Records
+  column: prescribed_meds
+  name: prescribed_meds missing (stored as the text "None")
+  check_type: completeness
+  severity: Critical
+  stakeholder: PatientCare
+  impact: CRITICAL - patient-safety risk; doctors cannot see the medication that was prescribed.
+  sql_file: C03.sql
+- id: A01
+  table: Insurance_Claims
+  column: billing_id
+  name: billing_id reused by more than one claim
+  check_type: uniqueness
+  severity: High
+  stakeholder: Finance
+  impact: One bill is attached to several claims, so claim totals may double count the same charge.
+  sql_file: A01.sql
+- id: A02
+  table: Insurance_Claims
+  column: billing_id
+  name: claim patient differs from the patient on the linked bill
+  check_type: consistency
+  severity: Critical
+  stakeholder: Finance
+  impact: CRITICAL - claims do not join to the right bill; any claims-to-billing figure (including over-charging) is unreliable.
+  sql_file: A02.sql
+- id: A03
+  table: Insurance_Claims
+  column: submitted_amount
+  name: submitted_amount larger than the linked bill total
+  check_type: consistency
+  severity: High
+  stakeholder: Finance
+  impact: Claimed amounts are far above billed amounts, another sign the claim-to-bill link is wrong.
+  sql_file: A03.sql
+- id: A04
+  table: Insurance_Claims
+  column: approved_date
+  name: approved_date earlier than submitted_date
+  check_type: consistency
+  severity: Medium
+  stakeholder: Finance
+  impact: Impossible sequence; claim timeline cannot be trusted for ageing analysis.
+  sql_file: A04.sql
+- id: A05
+  table: Insurance_Claims
+  column: paid_date
+  name: paid_date earlier than submitted_date
+  check_type: consistency
+  severity: Medium
+  stakeholder: Finance
+  impact: Impossible sequence; cash-timing analysis is unreliable.
+  sql_file: A05.sql
+- id: A45
+  table: Insurance_Claims
+  column: paid_date
+  name: paid_date earlier than approved_date
+  check_type: consistency
+  severity: Medium
+  stakeholder: Finance
+  impact: Payment recorded before approval.
+  sql_file: A45.sql
+- id: A07
+  table: Insurance_Claims
+  column: submitted_amount
+  name: negative submitted_amount
+  check_type: validity
+  severity: High
+  stakeholder: Finance
+  impact: Negative claim amounts distort submitted totals; held out of the reconciliation.
+  sql_file: A07.sql
+- id: A08
+  table: Insurance_Claims
+  column: denial_reason
+  name: Denied claim without a denial_reason
+  check_type: completeness
+  severity: Medium
+  stakeholder: Finance
+  impact: Cannot analyse or appeal denials without the reason.
+  sql_file: A08.sql
+- id: A44
+  table: Insurance_Claims
+  column: approved_amount
+  name: approved_amount larger than submitted_amount
+  check_type: consistency
+  severity: High
+  stakeholder: Finance
+  impact: Insurer cannot approve more than was asked; amount or sign is wrong.
+  sql_file: A44.sql
+- id: A09
+  table: Billing
+  column: total_amount
+  name: insurance_covered + patient_responsibility does not equal total_amount
+  check_type: consistency
+  severity: High
+  stakeholder: Finance
+  impact: Bill does not add up; patient may be charged the wrong amount.
+  sql_file: A09.sql
+- id: A10
+  table: Billing
+  column: amount_paid
+  name: amount_paid larger than patient_responsibility
+  check_type: consistency
+  severity: High
+  stakeholder: Compliance
+  impact: 'Patient paid more than they owe: possible over-charge that may need refunding.'
+  sql_file: A10.sql
+- id: A11
+  table: Billing
+  column: total_amount
+  name: negative total_amount
+  check_type: validity
+  severity: High
+  stakeholder: Finance
+  impact: Negative bill totals distort billed revenue.
+  sql_file: A11.sql
+- id: A12
+  table: Billing
+  column: appointment_id
+  name: bill raised for a Cancelled or No-Show appointment
+  check_type: consistency
+  severity: High
+  stakeholder: Compliance
+  impact: Patients may have been billed for care that was not delivered.
+  sql_file: A12.sql
+- id: A13
+  table: Billing
+  column: due_date
+  name: billing_date after due_date
+  check_type: consistency
+  severity: Medium
+  stakeholder: Finance
+  impact: Bill is due before it was raised; ageing buckets are wrong.
+  sql_file: A13.sql
+- id: A16
+  table: Patients
+  column: patient_id
+  name: duplicate patient_id
+  check_type: uniqueness
+  severity: High
+  stakeholder: PatientCare
+  impact: Two different people share one patient id; records can be merged or mixed up.
+  sql_file: A16.sql
+- id: A17
+  table: Patients
+  column: email
+  name: duplicate e-mail address (valid e-mails only)
+  check_type: uniqueness
+  severity: Medium
+  stakeholder: PatientCare
+  impact: The same e-mail on several patients suggests duplicate or mis-keyed registrations.
+  sql_file: A17.sql
+- id: A49
+  table: Patients
+  column: bmi
+  name: bmi inconsistent with height and weight
+  check_type: consistency
+  severity: Low
+  stakeholder: PatientCare
+  impact: Recorded BMI differs from the formula by more than 2 points.
+  sql_file: A49.sql
+- id: A53
+  table: Patients
+  column: last_visit_date
+  name: last_visit_date earlier than registration_date
+  check_type: consistency
+  severity: Low
+  stakeholder: PatientCare
+  impact: A patient cannot visit before registering.
+  sql_file: A53.sql
+- id: A24
+  table: Admissions
+  column: discharge_date
+  name: discharge_date earlier than admit_date
+  check_type: consistency
+  severity: High
+  stakeholder: PatientCare
+  impact: Length of stay cannot be computed; bed-day reporting is wrong.
+  sql_file: A24.sql
+- id: A25
+  table: Appointments
+  column: updated_at
+  name: updated_at earlier than created_at
+  check_type: consistency
+  severity: Low
+  stakeholder: Compliance
+  impact: Audit timestamps are out of order.
+  sql_file: A25.sql
+- id: A28
+  table: Prescriptions
+  column: end_date
+  name: end_date earlier than start_date
+  check_type: consistency
+  severity: High
+  stakeholder: PatientCare
+  impact: Prescription duration is impossible; active-medication lists are unreliable.
+  sql_file: A28.sql
+- id: A29
+  table: Prescriptions
+  column: is_active
+  name: marked active although end_date has passed
+  check_type: consistency
+  severity: Medium
+  stakeholder: PatientCare
+  impact: Patients may appear to be on medicines that have ended.
+  sql_file: A29.sql
+- id: A30
+  table: Prescription_Administration
+  column: prescription_id
+  name: administration patient differs from the prescription patient
+  check_type: consistency
+  severity: Critical
+  stakeholder: PatientCare
+  impact: CRITICAL - a dose is recorded against one patient but the prescription belongs to another; the link is broken.
+  sql_file: A30.sql
+- id: A31
+  table: Prescription_Administration
+  column: dosage_unit
+  name: administered unit differs from prescribed unit
+  check_type: consistency
+  severity: High
+  stakeholder: PatientCare
+  impact: Dose unit mismatch is a medication-safety risk.
+  sql_file: A31.sql
+- id: A32
+  table: Prescription_Administration
+  column: administered_datetime
+  name: given before the prescription start_date
+  check_type: consistency
+  severity: Medium
+  stakeholder: PatientCare
+  impact: Medicine administered before it was prescribed.
+  sql_file: A32.sql
+- id: A34
+  table: Referrals
+  column: referred_doctor_id
+  name: doctor referred to themselves
+  check_type: validity
+  severity: Medium
+  stakeholder: Compliance
+  impact: Self-referral is not a valid referral.
+  sql_file: A34.sql
+- id: A36
+  table: Hierarchy
+  column: entity_id
+  name: entity_id is not numeric (mixed key types)
+  check_type: validity
+  severity: Low
+  stakeholder: Ops
+  impact: Keys like HD-1 will not join to numeric ids.
+  sql_file: A36.sql
+- id: A37
+  table: Patient_Insurance
+  column: coverage_end
+  name: coverage_end earlier than coverage_start
+  check_type: consistency
+  severity: Medium
+  stakeholder: Finance
+  impact: Coverage window is impossible; eligibility checks fail.
+  sql_file: A37.sql
+- id: A38
+  table: Patient_Insurance
+  column: claim_id
+  name: linked claim belongs to a different patient
+  check_type: consistency
+  severity: High
+  stakeholder: Finance
+  impact: Insurance record points at someone else's claim.
+  sql_file: A38.sql
+- id: A39
+  table: Nurses
+  column: supervisor_nurse_id
+  name: nurse supervises themselves
+  check_type: validity
+  severity: Low
+  stakeholder: Ops
+  impact: Circular supervision breaks reporting lines.
+  sql_file: A39.sql
+- id: A40
+  table: Nurse_Assignments
+  column: nurse_id
+  name: same nurse assigned twice on the same date
+  check_type: uniqueness
+  severity: Medium
+  stakeholder: Ops
+  impact: Double-booked nurse; staffing levels are overstated.
+  sql_file: A40.sql
+- id: A41
+  table: Visits
+  column: systolic_bp
+  name: systolic_bp not greater than diastolic_bp
+  check_type: validity
+  severity: Medium
+  stakeholder: PatientCare
+  impact: Blood-pressure pair is physiologically impossible; likely swapped or mis-keyed.
+  sql_file: A41.sql
+- id: A43a
+  table: Hospitals
+  column: phone_number
+  name: duplicate phone number
+  check_type: uniqueness
+  severity: Low
+  stakeholder: Ops
+  impact: Two hospitals share a phone number.
+  sql_file: A43a.sql
+- id: A43b
+  table: Departments
+  column: phone_extension
+  name: duplicate phone extension
+  check_type: uniqueness
+  severity: Low
+  stakeholder: Ops
+  impact: Two departments share an extension.
+  sql_file: A43b.sql
+- id: A43c
+  table: Doctors
+  column: license_number
+  name: duplicate licence number
+  check_type: uniqueness
+  severity: Medium
+  stakeholder: Compliance
+  impact: Two doctors share a licence number; credentialing check fails.
+  sql_file: A43c.sql
+- id: A33
+  table: Procedure_Codes
+  column: parent_code_id
+  name: procedure code hierarchy contains a cycle
+  check_type: consistency
+  severity: Medium
+  stakeholder: Ops
+  impact: Circular parent codes make roll-ups by procedure family impossible.
+  python_fn: a33_procedure_code_cycles

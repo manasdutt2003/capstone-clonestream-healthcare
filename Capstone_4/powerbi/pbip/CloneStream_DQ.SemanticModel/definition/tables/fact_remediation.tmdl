@@ -1,0 +1,60 @@
+table fact_remediation
+	lineageTag: b57daf9c-0b52-5d8e-888c-ae21b618639f
+
+	column 'group'
+		dataType: string
+		lineageTag: ea561d11-4b33-5eed-84d8-ff4b21712f83
+		summarizeBy: none
+		sourceColumn: group
+
+	column 'title'
+		dataType: string
+		lineageTag: db2c98be-2602-5c7e-84cb-d6acf6f27f5d
+		summarizeBy: none
+		sourceColumn: title
+
+	column 'rules'
+		dataType: string
+		lineageTag: 52ec9054-4705-57b3-adaf-b2304374c4ca
+		summarizeBy: none
+		sourceColumn: rules
+
+	column 'action'
+		dataType: string
+		lineageTag: 3249eee1-5438-5490-8458-8e241f6f9403
+		summarizeBy: none
+		sourceColumn: action
+
+	column 'owner'
+		dataType: string
+		lineageTag: aba7810d-2b99-5865-b550-4037bfcbe635
+		summarizeBy: none
+		sourceColumn: owner
+
+	column 'effort'
+		dataType: string
+		lineageTag: 4e67c917-fd22-530a-b812-5ae703ac724f
+		summarizeBy: none
+		sourceColumn: effort
+
+	column 'risk'
+		dataType: string
+		lineageTag: efe8c1c2-b37c-5c10-af5c-30451caa7da2
+		summarizeBy: none
+		sourceColumn: risk
+
+	column 'status'
+		dataType: string
+		lineageTag: a16e0825-6980-5041-92e1-aa6ab255c53c
+		summarizeBy: none
+		sourceColumn: status
+
+	partition 'fact_remediation-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_remediation.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"group", type text}, {"title", type text}, {"rules", type text}, {"action", type text}, {"owner", type text}, {"effort", type text}, {"risk", type text}, {"status", type text}}, "en-US")
+			in
+			    Typed

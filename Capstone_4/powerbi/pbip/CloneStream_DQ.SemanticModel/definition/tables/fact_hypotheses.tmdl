@@ -1,0 +1,54 @@
+table fact_hypotheses
+	lineageTag: ac969887-a087-528d-8077-11cd0522f6bb
+
+	column 'issue'
+		dataType: string
+		lineageTag: 65af3192-e087-5cd6-a006-8b44ec215b63
+		summarizeBy: none
+		sourceColumn: issue
+
+	column 'id'
+		dataType: string
+		lineageTag: b52eacdd-4513-5297-bd9a-b7c22d481788
+		summarizeBy: none
+		sourceColumn: id
+
+	column 'layer'
+		dataType: string
+		lineageTag: 306cdb67-0b48-5d4b-8c84-dfaa66012774
+		summarizeBy: none
+		sourceColumn: layer
+
+	column 'hypothesis'
+		dataType: string
+		lineageTag: 5f12ca9b-a681-5a62-b333-4fec3422fcff
+		summarizeBy: none
+		sourceColumn: hypothesis
+
+	column 'test'
+		dataType: string
+		lineageTag: a84fb3ce-012d-51aa-ac2d-244c58fa3b43
+		summarizeBy: none
+		sourceColumn: test
+
+	column 'result'
+		dataType: string
+		lineageTag: 835f4a4e-b433-51a9-abc3-e2aeecf5335a
+		summarizeBy: none
+		sourceColumn: result
+
+	column 'verdict'
+		dataType: string
+		lineageTag: bdfe8566-e801-5e35-803a-9720066003f6
+		summarizeBy: none
+		sourceColumn: verdict
+
+	partition 'fact_hypotheses-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_hypotheses.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"issue", type text}, {"id", type text}, {"layer", type text}, {"hypothesis", type text}, {"test", type text}, {"result", type text}, {"verdict", type text}}, "en-US")
+			in
+			    Typed

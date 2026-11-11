@@ -1,0 +1,36 @@
+table fact_payment_links
+	lineageTag: 05ac679a-7e84-51f8-8a71-6099db35b379
+
+	column 'link'
+		dataType: string
+		lineageTag: fc012377-0cbf-5b31-8af1-ae12acbc1648
+		summarizeBy: none
+		sourceColumn: link
+
+	column 'linked_rows'
+		dataType: int64
+		lineageTag: 3bca2c0f-b7a2-5e6e-9b0e-cd2a57be70f3
+		summarizeBy: none
+		sourceColumn: linked_rows
+
+	column 'same_patient'
+		dataType: int64
+		lineageTag: 9833e588-b716-5335-b93b-867d735c58db
+		summarizeBy: none
+		sourceColumn: same_patient
+
+	column 'median_gap_days'
+		dataType: double
+		lineageTag: b6a15613-df1b-5aea-9b8a-6888cc9a56b7
+		summarizeBy: none
+		sourceColumn: median_gap_days
+
+	partition 'fact_payment_links-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_payment_links.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"link", type text}, {"linked_rows", Int64.Type}, {"same_patient", Int64.Type}, {"median_gap_days", type number}}, "en-US")
+			in
+			    Typed

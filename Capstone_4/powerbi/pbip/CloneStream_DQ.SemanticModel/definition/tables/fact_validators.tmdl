@@ -1,0 +1,60 @@
+table fact_validators
+	lineageTag: 21a202d3-2f77-5386-90fc-406e004cf98c
+
+	column 'check_id'
+		dataType: string
+		lineageTag: 195eb856-ba7e-5c68-91e8-bf9b137a0262
+		summarizeBy: none
+		sourceColumn: check_id
+
+	column 'table'
+		dataType: string
+		lineageTag: b3aeefe1-1718-5ce6-bd58-aa15da33926b
+		summarizeBy: none
+		sourceColumn: table
+
+	column 'column'
+		dataType: string
+		lineageTag: bc86ecac-4ac0-51b6-85ba-f8168145c6d4
+		summarizeBy: none
+		sourceColumn: column
+
+	column 'kind'
+		dataType: string
+		lineageTag: 870706f3-ffc3-54de-8caa-1559ba2dfaba
+		summarizeBy: none
+		sourceColumn: kind
+
+	column 'issue_prevented'
+		dataType: string
+		lineageTag: d58b3b57-6322-5bfb-b091-b63ca571c898
+		summarizeBy: none
+		sourceColumn: issue_prevented
+
+	column 'rule'
+		dataType: string
+		lineageTag: e6c462b3-d448-5255-a53d-7d1efa8a4331
+		summarizeBy: none
+		sourceColumn: rule
+
+	column 'rows_in_table'
+		dataType: int64
+		lineageTag: f3e3623a-beee-5ff3-b030-a083b0a3c61d
+		summarizeBy: none
+		sourceColumn: rows_in_table
+
+	column 'rows_it_would_reject'
+		dataType: int64
+		lineageTag: d2bd8328-269c-5863-9cee-66a4b996763d
+		summarizeBy: none
+		sourceColumn: rows_it_would_reject
+
+	partition 'fact_validators-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_validators.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"check_id", type text}, {"table", type text}, {"column", type text}, {"kind", type text}, {"issue_prevented", type text}, {"rule", type text}, {"rows_in_table", Int64.Type}, {"rows_it_would_reject", Int64.Type}}, "en-US")
+			in
+			    Typed

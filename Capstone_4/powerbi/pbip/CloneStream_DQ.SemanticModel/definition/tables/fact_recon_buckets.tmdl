@@ -1,0 +1,43 @@
+table fact_recon_buckets
+	lineageTag: ea4b228b-1053-59af-b428-dae7306317ed
+
+	column 'bucket'
+		dataType: string
+		lineageTag: 98d358d9-8776-533f-98cf-470aa3d3de42
+		summarizeBy: none
+		sourceColumn: bucket
+
+	column 'claims'
+		dataType: int64
+		lineageTag: 3e8532ed-fe92-5fa5-8840-7bce1d47cbcc
+		summarizeBy: none
+		sourceColumn: claims
+
+	column 'amount'
+		dataType: decimal
+		formatString: \$#,0.00
+		lineageTag: e2765bcc-b8bd-5ecc-87d3-aee521eaa521
+		summarizeBy: none
+		sourceColumn: amount
+
+	column 'confidence'
+		dataType: string
+		lineageTag: 7c20271f-7783-5c95-bf39-6db2c6286fca
+		summarizeBy: none
+		sourceColumn: confidence
+
+	column 'what_it_is'
+		dataType: string
+		lineageTag: 95cb1421-0656-55b9-b107-d8333094f2a3
+		summarizeBy: none
+		sourceColumn: what_it_is
+
+	partition 'fact_recon_buckets-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_recon_buckets.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"bucket", type text}, {"claims", Int64.Type}, {"amount", Currency.Type}, {"confidence", type text}, {"what_it_is", type text}}, "en-US")
+			in
+			    Typed

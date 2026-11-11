@@ -1,0 +1,117 @@
+table fact_timeline_tests
+	lineageTag: 4d6c3968-76b9-5472-92c1-691016c1547b
+
+	column 'rule_id'
+		dataType: string
+		lineageTag: 06520f9d-9db7-5105-9923-fabcc8eec867
+		summarizeBy: none
+		sourceColumn: rule_id
+
+	column 'table'
+		dataType: string
+		lineageTag: ca63b9ab-c868-54e8-a469-fc029f5a389b
+		summarizeBy: none
+		sourceColumn: table
+
+	column 'records'
+		dataType: int64
+		lineageTag: eb259d3d-a208-570c-afcb-dcbb49a7a903
+		summarizeBy: none
+		sourceColumn: records
+
+	column 'failed'
+		dataType: int64
+		lineageTag: eb5160b7-e8bd-5387-84b4-37b76afdf34c
+		summarizeBy: none
+		sourceColumn: failed
+
+	column 'overall_rate_pct'
+		dataType: double
+		lineageTag: 21a2f4a0-34ec-58e0-8354-1c3b20f361d8
+		summarizeBy: none
+		sourceColumn: overall_rate_pct
+
+	column 'years_observed'
+		dataType: int64
+		lineageTag: 1c7d470a-c627-5479-a37a-153a87328a14
+		summarizeBy: none
+		sourceColumn: years_observed
+
+	column 'years_with_failures'
+		dataType: int64
+		lineageTag: 6da4630f-2916-5ffb-bc19-4a1e980dc79b
+		summarizeBy: none
+		sourceColumn: years_with_failures
+
+	column 'first_year'
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c920032-adc2-5b67-b233-abb77affba21
+		summarizeBy: none
+		sourceColumn: first_year
+
+	column 'last_year'
+		dataType: int64
+		formatString: 0
+		lineageTag: d51c40e1-c6e6-5b26-9338-fe0ff80e9769
+		summarizeBy: none
+		sourceColumn: last_year
+
+	column 'years_tested'
+		dataType: int64
+		lineageTag: fee3845e-c141-5033-99aa-4b3adff8cf57
+		summarizeBy: none
+		sourceColumn: years_tested
+
+	column 'chi2'
+		dataType: double
+		lineageTag: 9aa6e0ea-2493-5bb7-a072-7ca398bb8524
+		summarizeBy: none
+		sourceColumn: chi2
+
+	column 'p_value'
+		dataType: double
+		lineageTag: 8073a08e-2e07-5830-98a4-a32f57805d34
+		summarizeBy: none
+		sourceColumn: p_value
+
+	column 'verdict'
+		dataType: string
+		lineageTag: 73ccd685-4735-5f0b-95a7-c15f0c3e9df0
+		summarizeBy: none
+		sourceColumn: verdict
+
+	column 'best_split_before'
+		dataType: double
+		formatString: 0
+		lineageTag: 5a5ae432-f94f-5d09-8018-2be4581238ab
+		summarizeBy: none
+		sourceColumn: best_split_before
+
+	column 'rate_before_pct'
+		dataType: double
+		lineageTag: d142e854-bea0-5775-996f-4baf589f7140
+		summarizeBy: none
+		sourceColumn: rate_before_pct
+
+	column 'rate_after_pct'
+		dataType: double
+		lineageTag: dd09f680-2a96-5a98-8cbb-21174b15ce86
+		summarizeBy: none
+		sourceColumn: rate_after_pct
+
+	column 'split_p_adjusted'
+		dataType: double
+		lineageTag: b3dc72cb-d4c8-52ff-b2b2-41fde0c3f9bb
+		summarizeBy: none
+		sourceColumn: split_p_adjusted
+
+	partition 'fact_timeline_tests-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_timeline_tests.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"rule_id", type text}, {"table", type text}, {"records", Int64.Type}, {"failed", Int64.Type}, {"overall_rate_pct", type number}, {"years_observed", Int64.Type}, {"years_with_failures", Int64.Type}, {"first_year", Int64.Type}, {"last_year", Int64.Type}, {"years_tested", Int64.Type}, {"chi2", type number}, {"p_value", type number}, {"verdict", type text}, {"best_split_before", type number}, {"rate_before_pct", type number}, {"rate_after_pct", type number}, {"split_p_adjusted", type number}}, "en-US")
+			in
+			    Typed

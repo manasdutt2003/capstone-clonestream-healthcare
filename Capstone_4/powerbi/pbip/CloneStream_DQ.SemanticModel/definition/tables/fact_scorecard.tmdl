@@ -1,0 +1,143 @@
+table fact_scorecard
+	lineageTag: 78ee7d09-34ec-5c46-8a7a-c95dad1ef9c7
+
+	measure 'Rules With Findings' =
+			CALCULATE ( DISTINCTCOUNT ( fact_scorecard[rule_id] ), fact_scorecard[rows_failed] > 0 )
+		formatString: #,0
+		lineageTag: 9916b537-09a8-595e-b980-8f170bd8898b
+
+	measure 'Rows Failed' =
+			SUM ( fact_scorecard[rows_failed] )
+		formatString: #,0
+		lineageTag: d9e8cbad-3503-52c3-ab04-027534d19d43
+
+	measure 'Failure Rate' =
+			DIVIDE ( SUM ( fact_scorecard[rows_failed] ), SUM ( fact_scorecard[rows_checked] ) )
+		formatString: 0.0%
+		lineageTag: 59a4db5f-b11b-59a5-8739-c7aa76c75a7f
+
+	measure 'Impact Score' =
+			SUM ( fact_scorecard[impact_score] )
+		lineageTag: e42a1866-e0f4-535a-b3c1-6a476c8f8831
+
+	column 'rank'
+		dataType: int64
+		lineageTag: ce6ebd4f-dacd-5b6c-a017-1d8874428605
+		summarizeBy: none
+		sourceColumn: rank
+
+	column 'rule_id'
+		dataType: string
+		lineageTag: ee32398f-4b9f-51a2-8e8f-083eccffd1a6
+		summarizeBy: none
+		sourceColumn: rule_id
+
+	column 'table'
+		dataType: string
+		lineageTag: 29f3472e-9af0-5584-bd42-004e459ca769
+		summarizeBy: none
+		sourceColumn: table
+
+	column 'column'
+		dataType: string
+		lineageTag: 46a538f5-dc5c-56d4-a304-2e781ea65f90
+		summarizeBy: none
+		sourceColumn: column
+
+	column 'check_type'
+		dataType: string
+		lineageTag: a3e1d352-992e-59d7-aa42-872133bb6128
+		summarizeBy: none
+		sourceColumn: check_type
+
+	column 'severity'
+		dataType: string
+		lineageTag: 3dd81ed9-b2b5-55e9-b962-29fa3fc6b622
+		summarizeBy: none
+		sourceColumn: severity
+
+	column 'stakeholder'
+		dataType: string
+		lineageTag: 8dc29bf5-8f57-5cd8-9578-89230ba118ef
+		summarizeBy: none
+		sourceColumn: stakeholder
+
+	column 'name'
+		dataType: string
+		lineageTag: 12417206-5545-5a57-b115-acd7b0f0a93a
+		summarizeBy: none
+		sourceColumn: name
+
+	column 'rows_checked'
+		dataType: int64
+		lineageTag: c8a5f40d-3cf3-583d-8a11-43e06be2c87b
+		summarizeBy: none
+		sourceColumn: rows_checked
+
+	column 'rows_failed'
+		dataType: int64
+		lineageTag: 12baaa37-154d-5496-8c6c-ac09e716a57c
+		summarizeBy: none
+		sourceColumn: rows_failed
+
+	column 'pct_failed'
+		dataType: double
+		lineageTag: 30df2eee-43a7-5ebe-b8a8-17a50f7c10bb
+		summarizeBy: none
+		sourceColumn: pct_failed
+
+	column 'impact_score'
+		dataType: double
+		lineageTag: b1a8ac7c-5556-5b8e-9aeb-d0b08975a0df
+		summarizeBy: none
+		sourceColumn: impact_score
+
+	column 'impact_statement'
+		dataType: string
+		lineageTag: 7046e16f-6d9b-5ed2-8d3d-fb9a84b2c777
+		summarizeBy: none
+		sourceColumn: impact_statement
+
+	column 'first_seen'
+		dataType: double
+		formatString: 0
+		lineageTag: 9c70aebf-303f-5101-99a7-1206b8adf7df
+		summarizeBy: none
+		sourceColumn: first_seen
+
+	column 'last_seen'
+		dataType: double
+		formatString: 0
+		lineageTag: 32f5740c-ab83-5886-81fe-c5bd6fdf99f1
+		summarizeBy: none
+		sourceColumn: last_seen
+
+	column 'source'
+		dataType: string
+		lineageTag: 2482f1fd-c14f-5b45-8255-59acfe433126
+		summarizeBy: none
+		sourceColumn: source
+
+	column 'run_ts'
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: f632ea2a-9b4a-5cd8-81cd-61b21c3add01
+		summarizeBy: none
+		sourceColumn: run_ts
+
+	column 'git_sha'
+		dataType: string
+		lineageTag: 0c0ab93c-8f06-59f2-9bdb-79efc42e5b6f
+		summarizeBy: none
+		sourceColumn: git_sha
+
+	partition 'fact_scorecard-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_scorecard.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"rank", Int64.Type}, {"rule_id", type text}, {"table", type text}, {"column", type text}, {"check_type", type text}, {"severity", type text}, {"stakeholder", type text}, {"name", type text}, {"rows_checked", Int64.Type}, {"rows_failed", Int64.Type}, {"pct_failed", type number}, {"impact_score", type number}, {"impact_statement", type text}, {"first_seen", type number}, {"last_seen", type number}, {"source", type text}, {"git_sha", type text}}, "en-US"),
+			    Dt0 = Table.TransformColumns(Typed, {{"run_ts", each try DateTimeZone.RemoveZone(DateTimeZone.FromText(_)) otherwise null, type nullable datetime}})
+			in
+			    Dt0

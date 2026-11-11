@@ -1,0 +1,130 @@
+table fact_claims
+	lineageTag: 68aac1dd-f8e9-56e9-a90d-16785e8a5c6f
+
+	measure 'Submitted Total' =
+			SUM ( fact_claims[submitted_amount] )
+		formatString: \$#,0
+		lineageTag: 55467365-fca2-5a10-88ec-fa711b4ebf39
+
+	measure 'Bucket Amount' =
+			SUM ( fact_recon_buckets[amount] )
+		formatString: \$#,0
+		lineageTag: 9d551062-17e4-56e6-902a-0a892bc26c3a
+
+	measure 'Certain Amount' =
+			CALCULATE ( SUM ( fact_claims[submitted_amount] ), dim_bucket[confidence_group] = "Certain" )
+		formatString: \$#,0
+		lineageTag: 0f365922-feef-5a05-8040-5cca27b5db4f
+
+	measure 'Estimated Amount' =
+			CALCULATE ( SUM ( fact_claims[submitted_amount] ), dim_bucket[confidence_group] = "Estimated" )
+		formatString: \$#,0
+		lineageTag: 4c501952-a211-5c0a-9f21-4480ef084db8
+
+	measure 'Held Amount' =
+			CALCULATE ( SUM ( fact_claims[submitted_amount] ), dim_bucket[confidence_group] = "Excluded" )
+		formatString: \$#,0
+		lineageTag: b4510ee4-ff2d-5173-841e-31a54ce93767
+
+	measure 'Waterfall Amount' =
+			SUM ( fact_waterfall[amount] )
+		formatString: \$#,0
+		lineageTag: c7c16b70-d152-5f49-b64b-6a671e73deee
+
+	measure 'Open Claims Over A Year' =
+			CALCULATE ( COUNTROWS ( fact_claims ), fact_claims[bucket] = "Pipeline", fact_claims[age_days] > 365 )
+		formatString: #,0
+		lineageTag: 23f523c9-e2c2-5715-92f8-78d4ce8f36f6
+
+	column 'claim_id'
+		dataType: string
+		lineageTag: 5a55654c-8f56-5d3e-a5fd-bfbc15735f97
+		summarizeBy: none
+		sourceColumn: claim_id
+
+	column 'patient_id'
+		dataType: string
+		lineageTag: 8492c061-6916-5867-b7a2-62c2fff61588
+		summarizeBy: none
+		sourceColumn: patient_id
+
+	column 'claim_status'
+		dataType: string
+		lineageTag: 0c87e12a-5a5b-5530-bb9b-782e5bea2e01
+		summarizeBy: none
+		sourceColumn: claim_status
+
+	column 'submitted_amount'
+		dataType: decimal
+		formatString: \$#,0.00
+		lineageTag: d44d49e7-44a5-5116-86e0-fa475185eb40
+		summarizeBy: none
+		sourceColumn: submitted_amount
+
+	column 'approved_amount'
+		dataType: decimal
+		formatString: \$#,0.00
+		lineageTag: fc2525d0-7ab6-5f42-85fa-58fc10c472ae
+		summarizeBy: none
+		sourceColumn: approved_amount
+
+	column 'submitted_date'
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: de2c86eb-2aa6-57a2-9326-c102f894b7a1
+		summarizeBy: none
+		sourceColumn: submitted_date
+
+	column 'approved_date'
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: bc968070-c2a0-54c7-b9f3-cb6a21a6040b
+		summarizeBy: none
+		sourceColumn: approved_date
+
+	column 'paid_date'
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: c18f6d69-bfcc-57fe-818e-1691c2c988b4
+		summarizeBy: none
+		sourceColumn: paid_date
+
+	column 'bucket'
+		dataType: string
+		lineageTag: b49dc142-f317-54ba-b1d7-45d65570df35
+		summarizeBy: none
+		sourceColumn: bucket
+
+	column 'confidence'
+		dataType: string
+		lineageTag: a5be9af6-7674-5d73-bbdc-23c55fb121c4
+		summarizeBy: none
+		sourceColumn: confidence
+
+	column 'age_days'
+		dataType: double
+		lineageTag: 679bdbd9-862a-54fe-84d6-988da0177512
+		summarizeBy: none
+		sourceColumn: age_days
+
+	column 'date_flags'
+		dataType: string
+		lineageTag: 56b51d9d-df5d-50e6-87cd-609d9b85126b
+		summarizeBy: none
+		sourceColumn: date_flags
+
+	column 'hold_reason'
+		dataType: string
+		lineageTag: 591745b2-7ed0-547f-a4d9-4261f5c3d042
+		summarizeBy: none
+		sourceColumn: hold_reason
+
+	partition 'fact_claims-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_claims.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"claim_id", type text}, {"patient_id", type text}, {"claim_status", type text}, {"submitted_amount", Currency.Type}, {"approved_amount", Currency.Type}, {"submitted_date", type date}, {"approved_date", type date}, {"paid_date", type date}, {"bucket", type text}, {"confidence", type text}, {"age_days", type number}, {"date_flags", type text}, {"hold_reason", type text}}, "en-US")
+			in
+			    Typed

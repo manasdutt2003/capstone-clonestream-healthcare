@@ -1,0 +1,102 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p4_fin_v05",
+  "position": {
+    "x": 740,
+    "y": 145,
+    "z": 5000,
+    "height": 360,
+    "width": 520,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_recon_buckets"
+                    }
+                  },
+                  "Property": "bucket"
+                }
+              },
+              "queryRef": "fact_recon_buckets.bucket",
+              "nativeQueryRef": "bucket"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_recon_buckets"
+                    }
+                  },
+                  "Property": "claims"
+                }
+              },
+              "queryRef": "fact_recon_buckets.claims",
+              "nativeQueryRef": "claims"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_recon_buckets"
+                    }
+                  },
+                  "Property": "amount"
+                }
+              },
+              "queryRef": "fact_recon_buckets.amount",
+              "nativeQueryRef": "amount"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_bucket"
+                    }
+                  },
+                  "Property": "confidence_group"
+                }
+              },
+              "queryRef": "dim_bucket.confidence_group",
+              "nativeQueryRef": "confidence_group"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Claim buckets and confidence'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

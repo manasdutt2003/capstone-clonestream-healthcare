@@ -1,0 +1,72 @@
+{
+  "name": "clonestream-audit-nightly",
+  "description": "Nightly full rebuild of every output for the audit trail (03:00 UTC).",
+  "schedule": {
+    "quartz_cron_expression": "0 0 3 * * ?",
+    "timezone_id": "UTC",
+    "pause_status": "UNPAUSED"
+  },
+  "max_concurrent_runs": 1,
+  "timeout_seconds": 2700,
+  "email_notifications": {
+    "on_failure": [
+      "data-engineering@clonestream.example"
+    ],
+    "on_duration_warning_threshold_exceeded": [
+      "data-engineering@clonestream.example"
+    ]
+  },
+  "webhook_notifications": {
+    "on_failure": [
+      {
+        "id": "REPLACE-WITH-SLACK-DESTINATION-ID"
+      }
+    ]
+  },
+  "health": {
+    "rules": [
+      {
+        "metric": "RUN_DURATION_SECONDS",
+        "op": "GREATER_THAN",
+        "value": 2400
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "task_key": "all",
+      "description": "python -m hcls all",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "all"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 1800
+    },
+    {
+      "task_key": "alerts",
+      "description": "python -m hcls alerts",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "alerts"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 1800,
+      "depends_on": [
+        {
+          "task_key": "all"
+        }
+      ]
+    }
+  ]
+}

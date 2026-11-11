@@ -1,0 +1,44 @@
+table fact_history
+	lineageTag: 31add77d-c6cd-5fb1-9107-7264ce30631b
+
+	column 'rule_id'
+		dataType: string
+		lineageTag: 0896714d-e224-5181-8003-0f7174c8579b
+		summarizeBy: none
+		sourceColumn: rule_id
+
+	column 'rows_checked'
+		dataType: int64
+		lineageTag: c5c37cb0-fe9e-5f34-9797-b901a9ae42f7
+		summarizeBy: none
+		sourceColumn: rows_checked
+
+	column 'rows_failed'
+		dataType: int64
+		lineageTag: a6d111e8-1a3f-50cf-9b65-7c0f1229044d
+		summarizeBy: none
+		sourceColumn: rows_failed
+
+	column 'run_ts'
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 5033dc67-0e32-5cd0-9af2-a653c5501a31
+		summarizeBy: none
+		sourceColumn: run_ts
+
+	column 'git_sha'
+		dataType: string
+		lineageTag: 87a20706-9763-5326-b3d4-dfa7f78edf4c
+		summarizeBy: none
+		sourceColumn: git_sha
+
+	partition 'fact_history-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_history.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"rule_id", type text}, {"rows_checked", Int64.Type}, {"rows_failed", Int64.Type}, {"git_sha", type text}}, "en-US"),
+			    Dt0 = Table.TransformColumns(Typed, {{"run_ts", each try DateTimeZone.RemoveZone(DateTimeZone.FromText(_)) otherwise null, type nullable datetime}})
+			in
+			    Dt0

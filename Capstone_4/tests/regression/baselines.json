@@ -1,0 +1,303 @@
+{
+ "clean_rules_nonzero_format": {},
+ "clean_rules_zero": [
+  "B-Doctors-consultation_fee",
+  "B-Doctors-rating",
+  "B-Doctors-years_exp",
+  "B-Patients-bmi",
+  "B-Patients-height_cm",
+  "B-Patients-weight_kg",
+  "B-Visits-oxygen_saturation",
+  "F-Admissions-admit_date",
+  "F-Admissions-admit_time",
+  "F-Admissions-discharge_date",
+  "F-Admissions-discharge_time",
+  "F-Appointments-appointment_date",
+  "F-Appointments-created_at",
+  "F-Appointments-updated_at",
+  "F-Billing-billing_date",
+  "F-Billing-due_date",
+  "F-Billing-paid_date",
+  "F-Doctors-email",
+  "F-Doctors-phone_number",
+  "F-Hospitals-phone_number",
+  "F-Insurance_Claims-approved_date",
+  "F-Insurance_Claims-paid_date",
+  "F-Insurance_Claims-submitted_date",
+  "F-Medical_Records-diagnosis_code",
+  "F-Medical_Records-follow_up_date",
+  "F-Medical_Records-record_date",
+  "F-Nurse_Assignments-shift_date",
+  "F-Nurses-hire_date",
+  "F-Patient_Insurance-coverage_end",
+  "F-Patient_Insurance-coverage_start",
+  "F-Patient_Insurance-group_number",
+  "F-Patient_Insurance-policy_number",
+  "F-Patient_Procedures-procedure_date",
+  "F-Patients-date_of_birth",
+  "F-Patients-email",
+  "F-Patients-emergency_contact_phone",
+  "F-Patients-insurance_group_number",
+  "F-Patients-insurance_policy_number",
+  "F-Patients-last_visit_date",
+  "F-Patients-phone_number",
+  "F-Patients-registration_date",
+  "F-Prescription_Administration-administered_datetime",
+  "F-Prescriptions-end_date",
+  "F-Prescriptions-start_date",
+  "F-Referrals-referral_date",
+  "F-Referrals-void_date",
+  "F-Visits-visit_date",
+  "J-Medical_Records-radiology_report",
+  "J-Patients-address",
+  "S-Admissions-admit_date",
+  "S-Admissions-discharge_date",
+  "S-Appointments-appointment_date",
+  "S-Appointments-created_at",
+  "S-Appointments-updated_at",
+  "S-Billing-billing_date",
+  "S-Billing-due_date",
+  "S-Billing-paid_date",
+  "S-Insurance_Claims-approved_date",
+  "S-Insurance_Claims-paid_date",
+  "S-Insurance_Claims-submitted_date",
+  "S-Medical_Records-follow_up_date",
+  "S-Medical_Records-record_date",
+  "S-Nurse_Assignments-shift_date",
+  "S-Nurses-hire_date",
+  "S-Patient_Insurance-coverage_end",
+  "S-Patient_Insurance-coverage_start",
+  "S-Patient_Procedures-procedure_date",
+  "S-Patients-date_of_birth",
+  "S-Patients-last_visit_date",
+  "S-Patients-registration_date",
+  "S-Prescription_Administration-administered_datetime",
+  "S-Prescriptions-end_date",
+  "S-Prescriptions-start_date",
+  "S-Referrals-referral_date",
+  "S-Referrals-void_date",
+  "S-Visits-visit_date",
+  "V-Hospitals-city",
+  "V-Patients-alcohol_consumption",
+  "V-Patients-blood_type",
+  "V-Patients-ethnicity",
+  "V-Patients-gender",
+  "V-Patients-language_preference",
+  "V-Patients-marital_status",
+  "V-Patients-patient_status",
+  "V-Patients-smoking_status"
+ ],
+ "cleaning": {
+  "by_rule": {
+   "bmi_recomputed": 181,
+   "category_standardised": 734,
+   "category_unmapped": 205,
+   "date_invalid": 48,
+   "date_reformatted": 99,
+   "date_sentinel": 125,
+   "date_unparseable": 101,
+   "dob_in_future": 50,
+   "email_invalid": 128,
+   "group_placeholder": 96,
+   "icd10_invalid": 1,
+   "id_holds_date": 2,
+   "number_non_numeric": 136,
+   "number_out_of_range": 326,
+   "phone_invalid": 228,
+   "phone_reformatted": 62,
+   "placeholder_to_null": 426,
+   "policy_placeholder": 59,
+   "whitespace_trimmed": 149
+  },
+  "total_cells_changed": 3156
+ },
+ "raw_rules": {
+  "A01": [
+   89,
+   250
+  ],
+  "A02": [
+   250,
+   250
+  ],
+  "A03": [
+   244,
+   250
+  ],
+  "A04": [
+   81,
+   160
+  ],
+  "A05": [
+   52,
+   100
+  ],
+  "A07": [
+   2,
+   250
+  ],
+  "A08": [
+   5,
+   50
+  ],
+  "A09": [
+   7,
+   250
+  ],
+  "A10": [
+   4,
+   250
+  ],
+  "A11": [
+   3,
+   250
+  ],
+  "A12": [
+   81,
+   249
+  ],
+  "A13": [
+   110,
+   250
+  ],
+  "A16": [
+   55,
+   4861
+  ],
+  "A17": [
+   5,
+   4805
+  ],
+  "A24": [
+   152,
+   289
+  ],
+  "A25": [
+   47,
+   107
+  ],
+  "A28": [
+   118,
+   293
+  ],
+  "A29": [
+   153,
+   197
+  ],
+  "A30": [
+   400,
+   400
+  ],
+  "A31": [
+   349,
+   400
+  ],
+  "A32": [
+   152,
+   400
+  ],
+  "A33": [
+   3,
+   45
+  ],
+  "A34": [
+   6,
+   200
+  ],
+  "A36": [
+   21,
+   641
+  ],
+  "A37": [
+   22,
+   300
+  ],
+  "A38": [
+   230,
+   230
+  ],
+  "A39": [
+   2,
+   107
+  ],
+  "A40": [
+   7,
+   350
+  ],
+  "A41": [
+   3,
+   400
+  ],
+  "A43a": [
+   1,
+   25
+  ],
+  "A43b": [
+   1,
+   21
+  ],
+  "A43c": [
+   1,
+   620
+  ],
+  "A44": [
+   2,
+   160
+  ],
+  "A45": [
+   61,
+   100
+  ],
+  "C01": [
+   90,
+   250
+  ],
+  "C02": [
+   123,
+   400
+  ],
+  "C03": [
+   40,
+   206
+  ],
+  "R-Doctors-hospital_id": [
+   122,
+   618
+  ],
+  "R-Patients-hospital_id": [
+   81,
+   4951
+  ],
+  "R-Patients-primary_care_doctor_id": [
+   0,
+   4952
+  ],
+  "R-Visits-patient_id": [
+   45,
+   400
+  ]
+ },
+ "rules_total": 441,
+ "sheet_rows": {
+  "Admissions": 350,
+  "Appointments": 250,
+  "Billing": 250,
+  "Departments": 21,
+  "Doctors": 620,
+  "Hierarchy": 641,
+  "Hospitals": 25,
+  "Insurance_Claims": 250,
+  "Medical_Records": 206,
+  "Nurse_Assignments": 350,
+  "Nurses": 120,
+  "Patient_Insurance": 300,
+  "Patient_Procedures": 250,
+  "Patients": 5005,
+  "Prescription_Administration": 400,
+  "Prescriptions": 500,
+  "Procedure_Codes": 45,
+  "Referential_Integrity": 20,
+  "Referrals": 200,
+  "Visits": 400
+ }
+}

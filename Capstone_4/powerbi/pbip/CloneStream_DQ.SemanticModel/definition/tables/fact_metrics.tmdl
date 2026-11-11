@@ -1,0 +1,101 @@
+table fact_metrics
+	lineageTag: 13b24e65-6687-5ad3-ba07-9e9a0d83c770
+
+	measure 'Latest Run' =
+			MAX ( fact_metrics[run_ts] )
+		lineageTag: 52110fe8-6597-58a0-8620-04ea8af566ce
+
+	measure 'Metric Latest' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[run_ts] = r )
+		lineageTag: b5b32bf3-7a4e-5d5d-abcb-5246ce65a520
+
+	measure 'Critical Rules Failing' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "critical_rules_failing", fact_metrics[run_ts] = r )
+		formatString: #,0
+		lineageTag: a91c3785-ffdf-5823-a42f-f3d4f615a174
+
+	measure 'Rule Pass Rate' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "rule_pass_rate", fact_metrics[run_ts] = r ) / 100
+		formatString: 0.0%
+		lineageTag: ba58e237-b94b-59b1-b43a-70574ea67d99
+
+	measure 'Paid Certain' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "paid_certain", fact_metrics[run_ts] = r )
+		formatString: \$#,0
+		lineageTag: 8a32c0c8-eb74-5a79-a152-611c38bd7cb7
+
+	measure 'Pipeline Estimated' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "pipeline_estimated", fact_metrics[run_ts] = r )
+		formatString: \$#,0
+		lineageTag: 85701a6c-1916-5f61-8783-43fa42b84e5e
+
+	measure 'Pipeline Expected' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "pipeline_expected", fact_metrics[run_ts] = r )
+		formatString: \$#,0
+		lineageTag: 1ca02359-57cf-54cd-862f-a5f58d668a22
+
+	measure 'Claims On Hold' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "claims_on_dq_hold", fact_metrics[run_ts] = r )
+		formatString: #,0
+		lineageTag: 811a3c2a-ec00-546d-aac4-825f70cf40ce
+
+	measure 'Open Alerts' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "alerts_open", fact_metrics[run_ts] = r )
+		formatString: #,0
+		lineageTag: ea39fdb4-3501-5afb-a868-deb8e2010dcc
+
+	column 'run_ts'
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 5db158cf-a6b9-5c6e-8ce4-ead99e2bee4e
+		summarizeBy: none
+		sourceColumn: run_ts
+
+	column 'git_sha'
+		dataType: string
+		lineageTag: da8c94bd-31d5-55ea-a436-7ccf15e872f0
+		summarizeBy: none
+		sourceColumn: git_sha
+
+	column 'metric'
+		dataType: string
+		lineageTag: 4b1e8b3b-fec1-51ac-b8d3-075d559e0834
+		summarizeBy: none
+		sourceColumn: metric
+
+	column 'value'
+		dataType: double
+		lineageTag: 7dc661f6-147b-5457-88e5-4ecbd0cee37d
+		summarizeBy: none
+		sourceColumn: value
+
+	column 'unit'
+		dataType: string
+		lineageTag: 2a962e38-a0dc-587f-86fe-bbb507e2c068
+		summarizeBy: none
+		sourceColumn: unit
+
+	column 'area'
+		dataType: string
+		lineageTag: b4d4f662-2e92-5f23-9215-0ab97c0fe139
+		summarizeBy: none
+		sourceColumn: area
+
+	partition 'fact_metrics-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_metrics.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"git_sha", type text}, {"metric", type text}, {"value", type number}, {"unit", type text}, {"area", type text}}, "en-US"),
+			    Dt0 = Table.TransformColumns(Typed, {{"run_ts", each try DateTimeZone.RemoveZone(DateTimeZone.FromText(_)) otherwise null, type nullable datetime}})
+			in
+			    Dt0

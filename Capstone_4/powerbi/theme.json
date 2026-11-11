@@ -1,0 +1,21 @@
+{
+  "name": "CloneStream DQ",
+  "dataColors": ["#1F5F8B", "#6BA3C7", "#E8710A", "#B3261E", "#5B6770", "#9DB4C0", "#F2B01E", "#2E7D32"],
+  "background": "#FFFFFF",
+  "foreground": "#1B2A33",
+  "tableAccent": "#1F5F8B",
+  "good": "#2E7D32",
+  "neutral": "#F2B01E",
+  "bad": "#B3261E",
+  "maximum": "#1F5F8B",
+  "center": "#F7F9FA",
+  "minimum": "#DCE6EC",
+  "textClasses": {
+    "title": { "fontFace": "Segoe UI Semibold", "fontSize": 14, "color": "#1B2A33" },
+    "label": { "fontFace": "Segoe UI", "fontSize": 10, "color": "#1B2A33" },
+    "callout": { "fontFace": "Segoe UI Semibold", "fontSize": 28, "color": "#1B2A33" }
+  },
+  "visualStyles": {
+    "*": { "*": { "title": [{ "show": true, "fontSize": 12 }], "border": [{ "show": false }] } }
+  }
+}

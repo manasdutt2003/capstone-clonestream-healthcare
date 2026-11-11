@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p1_exec_v09",
+  "position": {
+    "x": 20,
+    "y": 480,
+    "z": 9000,
+    "height": 220,
+    "width": 1240,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Refund decision: HOLD. The claim-to-bill link is wrong on every claim, so over-charging cannot be determined until the key mapping is fixed. Source: CloneStream Healthcare data crisis, as of 2026-10-21."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

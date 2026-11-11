@@ -1,0 +1,88 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p3_time_v03",
+  "position": {
+    "x": 860,
+    "y": 160,
+    "z": 3000,
+    "height": 360,
+    "width": 400,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_timeline_tests"
+                    }
+                  },
+                  "Property": "rule_id"
+                }
+              },
+              "queryRef": "fact_timeline_tests.rule_id",
+              "nativeQueryRef": "rule_id"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_timeline_tests"
+                    }
+                  },
+                  "Property": "p_value"
+                }
+              },
+              "queryRef": "fact_timeline_tests.p_value",
+              "nativeQueryRef": "p_value"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_timeline_tests"
+                    }
+                  },
+                  "Property": "verdict"
+                }
+              },
+              "queryRef": "fact_timeline_tests.verdict",
+              "nativeQueryRef": "verdict"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Statistical test per rule'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,108 @@
+table fact_link_health
+	lineageTag: 17516853-2fa9-5d96-9e4c-337905de26d6
+
+	measure 'Records Without Medication' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "c03_records_without_medication", fact_metrics[run_ts] = r )
+		formatString: #,0
+		lineageTag: 022676a4-8560-567a-9937-68226263746f
+
+	measure 'Visits Without Appointment' =
+			VAR r = [Latest Run]
+			RETURN CALCULATE ( SUM ( fact_metrics[value] ), fact_metrics[metric] = "c02_visits_without_appointment", fact_metrics[run_ts] = r )
+		formatString: #,0
+		lineageTag: 4ee4032f-6f8c-52fd-b29e-6e6fffbdeb89
+
+	measure 'Broken Links' =
+			CALCULATE ( COUNTROWS ( fact_link_health ), fact_link_health[status] = "broken" )
+		formatString: #,0
+		lineageTag: 588d6c4b-1cbc-5260-8b83-9a201842e203
+
+	measure 'Open Remediation Groups' =
+			CALCULATE ( COUNTROWS ( fact_remediation ), fact_remediation[status] = "Open" )
+		formatString: #,0
+		lineageTag: d27d645c-82eb-5946-8a74-4b347a839070
+
+	measure 'Backfill Applied' =
+			SUM ( fact_backfill[applied_to_copy] )
+		formatString: #,0
+		lineageTag: 1edfdd6d-1186-52a8-a09d-4c3e8ceaf399
+
+	measure 'Refund Status' =
+			"On hold: claim-to-bill link is wrong on every claim"
+		lineageTag: 0ea9b2e1-f1d3-5230-b5ec-238b6bb4bec5
+
+	measure 'Links Count' =
+			COUNTROWS ( fact_link_health )
+		formatString: #,0
+		lineageTag: cdc03350-1eac-5ab7-b311-0a6171cbbc27
+
+	column 'child_table'
+		dataType: string
+		lineageTag: 0c1be77d-7bbd-5c41-8a5e-2152dcd97575
+		summarizeBy: none
+		sourceColumn: child_table
+
+	column 'child_column'
+		dataType: string
+		lineageTag: af68f425-36aa-5889-88e5-d41a6417a47c
+		summarizeBy: none
+		sourceColumn: child_column
+
+	column 'parent_table'
+		dataType: string
+		lineageTag: d93867de-b799-586a-94bc-5696ba334892
+		summarizeBy: none
+		sourceColumn: parent_table
+
+	column 'parent_column'
+		dataType: string
+		lineageTag: e1f57c7c-9926-5daf-ad78-ffc7a010e39a
+		summarizeBy: none
+		sourceColumn: parent_column
+
+	column 'orphan_pct'
+		dataType: double
+		lineageTag: 720134f0-1f1b-5f0e-8b83-eb6ddf062d82
+		summarizeBy: none
+		sourceColumn: orphan_pct
+
+	column 'wrong_patient_pct'
+		dataType: double
+		lineageTag: 1be25e29-36b3-5419-b7dc-1b5e7ab56979
+		summarizeBy: none
+		sourceColumn: wrong_patient_pct
+
+	column 'status'
+		dataType: string
+		lineageTag: 95ec6e11-8c73-5827-934d-b76ce51a3fc3
+		summarizeBy: none
+		sourceColumn: status
+
+	column 'child_group'
+		dataType: string
+		lineageTag: a93195dc-c0aa-50c2-8ec1-47caa411a6fe
+		summarizeBy: none
+		sourceColumn: child_group
+
+	column 'parent_group'
+		dataType: string
+		lineageTag: f34209ff-79c0-5926-8972-5761781a5a2e
+		summarizeBy: none
+		sourceColumn: parent_group
+
+	column 'crosses_systems'
+		dataType: boolean
+		lineageTag: 53688403-e901-589b-8608-8b2ea543ac20
+		summarizeBy: none
+		sourceColumn: crosses_systems
+
+	partition 'fact_link_health-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_link_health.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"child_table", type text}, {"child_column", type text}, {"parent_table", type text}, {"parent_column", type text}, {"orphan_pct", type number}, {"wrong_patient_pct", type number}, {"status", type text}, {"child_group", type text}, {"parent_group", type text}, {"crosses_systems", type logical}}, "en-US")
+			in
+			    Typed

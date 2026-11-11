@@ -1,0 +1,58 @@
+table fact_timeline
+	lineageTag: e887b9c6-0354-5cc3-ba8c-6e3216fc1ad6
+
+	measure 'Timeline Failure Rate' =
+			DIVIDE ( SUM ( fact_timeline[rows_failed] ), SUM ( fact_timeline[rows_checked] ) )
+		formatString: 0.0%
+		lineageTag: c45a75ad-7bb6-5262-b816-babc6255ef07
+
+	measure 'Evidence Of Change' =
+			IF ( MIN ( fact_timeline_tests[p_value] ) < 0.05, "Rate changed over time", "Flat: no evidence of a change" )
+		lineageTag: 468cd840-a3ec-5c00-822a-1684a5825005
+
+	column 'rule_id'
+		dataType: string
+		lineageTag: cfe34cc3-46c2-589d-97ef-e18228921ea6
+		summarizeBy: none
+		sourceColumn: rule_id
+
+	column 'table'
+		dataType: string
+		lineageTag: 77dbdb1c-8f71-58c3-86cf-3fd50acedc6f
+		summarizeBy: none
+		sourceColumn: table
+
+	column 'year'
+		dataType: int64
+		formatString: 0
+		lineageTag: 80a055c0-d803-5ecc-8b8b-0662d359b0cb
+		summarizeBy: none
+		sourceColumn: year
+
+	column 'rows_checked'
+		dataType: int64
+		lineageTag: 8f4b3af5-2ab4-5979-b209-e461c39990ef
+		summarizeBy: none
+		sourceColumn: rows_checked
+
+	column 'rows_failed'
+		dataType: int64
+		lineageTag: bae6f279-1cf9-5ab6-b997-f9fff17b8a14
+		summarizeBy: none
+		sourceColumn: rows_failed
+
+	column 'pct_failed'
+		dataType: double
+		lineageTag: c8cdcc5d-2583-5258-b471-37ee3bd87126
+		summarizeBy: none
+		sourceColumn: pct_failed
+
+	partition 'fact_timeline-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_timeline.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"rule_id", type text}, {"table", type text}, {"year", Int64.Type}, {"rows_checked", Int64.Type}, {"rows_failed", Int64.Type}, {"pct_failed", type number}}, "en-US")
+			in
+			    Typed

@@ -1,0 +1,30 @@
+# Central configuration. No code may call today(); everything is relative to as_of_date (SPEC NFR2, DECISIONS D-002).
+as_of_date: "2026-10-21"
+
+paths:
+  raw_workbook: Resources/HCLS.xlsx
+  clean_workbook: data/clean/HCLS_cleaned.xlsx
+  outputs: outputs
+  sql_dir: sql
+  dq_registry: src/hcls/dq/registry.yaml
+
+ci:
+  repo_subpath: "Projects/Individual/Manas Dutt/Week 4/Capstone 3"   # where this folder sits inside the shared class repo (for the root-level workflow copies)
+
+alerts:
+  critical_threshold_pct: 5     # Critical rule failing above this % raises an alert (SPEC section 11)
+  drift_pct: 10                 # failure-count change between runs that raises a drift alert
+  recon_sla_seconds: 300        # reconciliation must finish within 5 minutes
+
+scoring:
+  severity_weight: {Critical: 10, High: 5, Medium: 2, Low: 1, Info: 0}   # Info = field that is empty by design
+  stakeholder_weight: {Finance: 1.0, Compliance: 1.0, PatientCare: 1.0, Ops: 0.5}
+
+notifications:
+  slack:                        # webhook URLs are secrets: environment variables only (SLACK_WEBHOOK_URL, ..._FINANCE, ...). See docs/NOTIFICATIONS.md
+    enabled: true
+    only_on_change: true        # do not repeat an unchanged alert set every day
+    notify_when_clear: true     # one "all clear" message when the alerts go away
+    max_alerts_listed: 10
+    timeout_seconds: 10
+    retries: 3

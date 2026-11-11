@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p2_score_v03",
+  "position": {
+    "x": 20,
+    "y": 125,
+    "z": 3000,
+    "height": 575,
+    "width": 620,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_scorecard"
+                    }
+                  },
+                  "Property": "table"
+                }
+              },
+              "queryRef": "fact_scorecard.table",
+              "nativeQueryRef": "table"
+            }
+          ]
+        },
+        "Columns": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_severity"
+                    }
+                  },
+                  "Property": "severity"
+                }
+              },
+              "queryRef": "dim_severity.severity",
+              "nativeQueryRef": "severity"
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_scorecard"
+                    }
+                  },
+                  "Property": "Rules With Findings"
+                }
+              },
+              "queryRef": "fact_scorecard.Rules With Findings",
+              "nativeQueryRef": "Rules With Findings"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Rules with findings, by table and severity'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

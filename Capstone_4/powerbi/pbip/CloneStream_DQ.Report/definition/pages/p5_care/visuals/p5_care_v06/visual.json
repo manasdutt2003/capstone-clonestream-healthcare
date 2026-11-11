@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p5_care_v06",
+  "position": {
+    "x": 20,
+    "y": 250,
+    "z": 6000,
+    "height": 460,
+    "width": 760,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_remediation"
+                    }
+                  },
+                  "Property": "group"
+                }
+              },
+              "queryRef": "fact_remediation.group",
+              "nativeQueryRef": "group"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_remediation"
+                    }
+                  },
+                  "Property": "title"
+                }
+              },
+              "queryRef": "fact_remediation.title",
+              "nativeQueryRef": "title"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_remediation"
+                    }
+                  },
+                  "Property": "owner"
+                }
+              },
+              "queryRef": "fact_remediation.owner",
+              "nativeQueryRef": "owner"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_remediation"
+                    }
+                  },
+                  "Property": "effort"
+                }
+              },
+              "queryRef": "fact_remediation.effort",
+              "nativeQueryRef": "effort"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_remediation"
+                    }
+                  },
+                  "Property": "status"
+                }
+              },
+              "queryRef": "fact_remediation.status",
+              "nativeQueryRef": "status"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Remediation tracker'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

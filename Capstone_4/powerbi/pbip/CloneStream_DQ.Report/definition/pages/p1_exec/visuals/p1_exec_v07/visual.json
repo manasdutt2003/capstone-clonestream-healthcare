@@ -1,0 +1,78 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p1_exec_v07",
+  "position": {
+    "x": 20,
+    "y": 160,
+    "z": 7000,
+    "height": 300,
+    "width": 760,
+    "tabOrder": 7000
+  },
+  "visual": {
+    "visualType": "hundredPercentStackedBarChart",
+    "query": {
+      "queryState": {
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_bucket"
+                    }
+                  },
+                  "Property": "confidence_group"
+                }
+              },
+              "queryRef": "dim_bucket.confidence_group",
+              "nativeQueryRef": "confidence_group"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_recon_buckets"
+                    }
+                  },
+                  "Property": "Bucket Amount"
+                }
+              },
+              "queryRef": "fact_recon_buckets.Bucket Amount",
+              "nativeQueryRef": "Bucket Amount"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Certain vs estimated (share of claim dollars)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

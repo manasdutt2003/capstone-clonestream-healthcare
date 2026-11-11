@@ -1,0 +1,132 @@
+{
+  "name": "clonestream-dq-daily",
+  "description": "Daily data-quality scorecard and alerts (02:00 UTC).",
+  "schedule": {
+    "quartz_cron_expression": "0 0 2 * * ?",
+    "timezone_id": "UTC",
+    "pause_status": "UNPAUSED"
+  },
+  "max_concurrent_runs": 1,
+  "timeout_seconds": 1800,
+  "email_notifications": {
+    "on_failure": [
+      "data-engineering@clonestream.example"
+    ],
+    "on_duration_warning_threshold_exceeded": [
+      "data-engineering@clonestream.example"
+    ]
+  },
+  "webhook_notifications": {
+    "on_failure": [
+      {
+        "id": "REPLACE-WITH-SLACK-DESTINATION-ID"
+      }
+    ]
+  },
+  "health": {
+    "rules": [
+      {
+        "metric": "RUN_DURATION_SECONDS",
+        "op": "GREATER_THAN",
+        "value": 1500
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "task_key": "ingest",
+      "description": "python -m hcls ingest",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "ingest"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 900
+    },
+    {
+      "task_key": "clean",
+      "description": "python -m hcls clean",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "clean"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 900,
+      "depends_on": [
+        {
+          "task_key": "ingest"
+        }
+      ]
+    },
+    {
+      "task_key": "dq",
+      "description": "python -m hcls dq",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "dq"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 900,
+      "depends_on": [
+        {
+          "task_key": "clean"
+        }
+      ]
+    },
+    {
+      "task_key": "alerts",
+      "description": "python -m hcls alerts",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "alerts"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 900,
+      "depends_on": [
+        {
+          "task_key": "dq"
+        }
+      ]
+    },
+    {
+      "task_key": "notify",
+      "description": "python -m hcls notify",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "notify"
+        }
+      },
+      "max_retries": 1,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 300,
+      "depends_on": [
+        {
+          "task_key": "alerts"
+        }
+      ]
+    }
+  ]
+}

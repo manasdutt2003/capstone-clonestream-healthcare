@@ -1,0 +1,92 @@
+{
+  "name": "clonestream-recon-weekly",
+  "description": "Weekly Finance reconciliation workbook and brief (Mondays 06:00 UTC). Alert if the run exceeds the 5-minute SLA.",
+  "schedule": {
+    "quartz_cron_expression": "0 0 6 ? * MON",
+    "timezone_id": "UTC",
+    "pause_status": "UNPAUSED"
+  },
+  "max_concurrent_runs": 1,
+  "timeout_seconds": 600,
+  "email_notifications": {
+    "on_failure": [
+      "data-engineering@clonestream.example"
+    ],
+    "on_duration_warning_threshold_exceeded": [
+      "data-engineering@clonestream.example"
+    ]
+  },
+  "webhook_notifications": {
+    "on_failure": [
+      {
+        "id": "REPLACE-WITH-SLACK-DESTINATION-ID"
+      }
+    ]
+  },
+  "health": {
+    "rules": [
+      {
+        "metric": "RUN_DURATION_SECONDS",
+        "op": "GREATER_THAN",
+        "value": 300
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "task_key": "ingest",
+      "description": "python -m hcls ingest",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "ingest"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 300
+    },
+    {
+      "task_key": "clean",
+      "description": "python -m hcls clean",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "clean"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 300,
+      "depends_on": [
+        {
+          "task_key": "ingest"
+        }
+      ]
+    },
+    {
+      "task_key": "recon",
+      "description": "python -m hcls recon",
+      "notebook_task": {
+        "notebook_path": "/Repos/clonestream/capstone3/databricks/notebooks/run_step",
+        "source": "WORKSPACE",
+        "base_parameters": {
+          "step": "recon"
+        }
+      },
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000,
+      "retry_on_timeout": false,
+      "timeout_seconds": 300,
+      "depends_on": [
+        {
+          "task_key": "clean"
+        }
+      ]
+    }
+  ]
+}

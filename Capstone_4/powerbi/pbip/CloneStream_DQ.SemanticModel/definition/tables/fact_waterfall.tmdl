@@ -1,0 +1,39 @@
+table fact_waterfall
+	lineageTag: f1a5afbd-a345-5160-88a7-068d38f8f0a8
+
+	column 'step'
+		dataType: string
+		lineageTag: dd3b1a10-1952-5d54-93d7-8eabcbd21923
+		summarizeBy: none
+		sourceColumn: step
+		sortByColumn: 'sort'
+
+	column 'sort'
+		dataType: int64
+		isHidden
+		lineageTag: c24eeb6e-d0e7-5c7a-b494-8d904e211c34
+		summarizeBy: none
+		sourceColumn: sort
+
+	column 'amount'
+		dataType: decimal
+		formatString: \$#,0.00
+		lineageTag: 9969527e-cb30-5799-ba9c-9e3f6fb0347e
+		summarizeBy: none
+		sourceColumn: amount
+
+	column 'kind'
+		dataType: string
+		lineageTag: 9c1d2986-7e10-5012-a58b-ef2617aa1a83
+		summarizeBy: none
+		sourceColumn: kind
+
+	partition 'fact_waterfall-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_waterfall.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"step", type text}, {"sort", Int64.Type}, {"amount", Currency.Type}, {"kind", type text}}, "en-US")
+			in
+			    Typed

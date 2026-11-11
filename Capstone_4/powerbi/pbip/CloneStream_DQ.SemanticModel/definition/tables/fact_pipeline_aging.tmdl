@@ -1,0 +1,45 @@
+table fact_pipeline_aging
+	lineageTag: a62066fc-a623-5a46-981f-9370062b0536
+
+	measure 'Pipeline Aging Amount' =
+			SUM ( fact_pipeline_aging[submitted] )
+		formatString: \$#,0
+		lineageTag: 9d40f108-f02c-5812-b94b-faf7d056a342
+
+	column 'age'
+		dataType: string
+		lineageTag: c19d5a01-46d4-568d-9a03-7618c991690f
+		summarizeBy: none
+		sourceColumn: age
+		sortByColumn: 'sort'
+
+	column 'claims'
+		dataType: int64
+		lineageTag: b4c24991-8d38-58e5-bff4-6491e66cd658
+		summarizeBy: none
+		sourceColumn: claims
+
+	column 'submitted'
+		dataType: decimal
+		formatString: \$#,0.00
+		lineageTag: 831cc395-b738-597c-8201-17db92bcb3cf
+		summarizeBy: none
+		sourceColumn: submitted
+
+	column 'sort'
+		dataType: int64
+		isHidden
+		lineageTag: c7109eb0-6bc9-52a4-8f31-4b9576094851
+		summarizeBy: none
+		sourceColumn: sort
+
+	partition 'fact_pipeline_aging-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_pipeline_aging.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"age", type text}, {"claims", Int64.Type}, {"submitted", Currency.Type}}, "en-US"),
+			    Indexed = Table.AddIndexColumn(Typed, "sort", 1, 1, Int64.Type)
+			in
+			    Indexed

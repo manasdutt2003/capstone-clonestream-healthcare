@@ -1,0 +1,84 @@
+table fact_backfill
+	lineageTag: 0d2e6b0e-4eeb-5fc7-b3ea-344e0ec1a7e9
+
+	column 'rule_id'
+		dataType: string
+		lineageTag: 92bb1531-0c18-57c2-9d23-84c3496c7a17
+		summarizeBy: none
+		sourceColumn: rule_id
+
+	column 'backfill'
+		dataType: string
+		lineageTag: 28951a31-b1ab-5376-b174-cefb607c226a
+		summarizeBy: none
+		sourceColumn: backfill
+
+	column 'records_failing_before'
+		dataType: int64
+		lineageTag: 2cfa0fca-7d4e-5592-a5d0-1328aedd4677
+		summarizeBy: none
+		sourceColumn: records_failing_before
+
+	column 'proposals_high'
+		dataType: int64
+		lineageTag: 5abeb47c-ac57-5344-b4e4-ff5b9b175bad
+		summarizeBy: none
+		sourceColumn: proposals_high
+
+	column 'proposals_medium'
+		dataType: int64
+		lineageTag: 8e8be4e9-811f-5434-ace6-97f65fbce816
+		summarizeBy: none
+		sourceColumn: proposals_medium
+
+	column 'proposals_low_or_ambiguous'
+		dataType: int64
+		lineageTag: 67882067-96dd-5704-99ee-eaaeb784be53
+		summarizeBy: none
+		sourceColumn: proposals_low_or_ambiguous
+
+	column 'conflicts_with_plan'
+		dataType: int64
+		lineageTag: e8d8f274-f7a0-5789-837c-ec5dcfe3abab
+		summarizeBy: none
+		sourceColumn: conflicts_with_plan
+
+	column 'no_match'
+		dataType: int64
+		lineageTag: 433221bd-6b08-5c75-b5ca-96b91aef6d7a
+		summarizeBy: none
+		sourceColumn: no_match
+
+	column 'applied_to_copy'
+		dataType: int64
+		lineageTag: dd94dbac-4c22-5b36-8c53-3da86d7acffe
+		summarizeBy: none
+		sourceColumn: applied_to_copy
+
+	column 'records_failing_after'
+		dataType: int64
+		lineageTag: e74ead5f-0a9c-5e9c-873b-9bfd2819f0d9
+		summarizeBy: none
+		sourceColumn: records_failing_after
+
+	column 'recovered_pct'
+		dataType: double
+		lineageTag: 459f8990-42d9-51d7-93a1-17e921fafd86
+		summarizeBy: none
+		sourceColumn: recovered_pct
+
+	column 'source_unchanged'
+		dataType: boolean
+		lineageTag: f8cfb592-ca01-5181-8727-65d2470bb53f
+		summarizeBy: none
+		sourceColumn: source_unchanged
+
+	partition 'fact_backfill-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\fact_backfill.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"rule_id", type text}, {"backfill", type text}, {"records_failing_before", Int64.Type}, {"proposals_high", Int64.Type}, {"proposals_medium", Int64.Type}, {"proposals_low_or_ambiguous", Int64.Type}, {"conflicts_with_plan", Int64.Type}, {"no_match", Int64.Type}, {"applied_to_copy", Int64.Type}, {"records_failing_after", Int64.Type}, {"recovered_pct", type number}, {"source_unchanged", type logical}}, "en-US")
+			in
+			    Typed

@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CloneStream Databricks job definition (Jobs API 2.1 subset)",
+  "type": "object",
+  "required": [
+    "name",
+    "schedule",
+    "max_concurrent_runs",
+    "timeout_seconds",
+    "email_notifications",
+    "tasks"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^clonestream-"
+    },
+    "description": {
+      "type": "string"
+    },
+    "schedule": {
+      "type": "object",
+      "required": [
+        "quartz_cron_expression",
+        "timezone_id"
+      ],
+      "properties": {
+        "quartz_cron_expression": {
+          "type": "string",
+          "pattern": "^\\S+( \\S+){5,6}$"
+        },
+        "timezone_id": {
+          "const": "UTC"
+        },
+        "pause_status": {
+          "enum": [
+            "PAUSED",
+            "UNPAUSED"
+          ]
+        }
+      }
+    },
+    "max_concurrent_runs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 60
+    },
+    "email_notifications": {
+      "type": "object",
+      "required": [
+        "on_failure"
+      ],
+      "properties": {
+        "on_failure": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "metric",
+              "op",
+              "value"
+            ],
+            "properties": {
+              "metric": {
+                "const": "RUN_DURATION_SECONDS"
+              },
+              "op": {
+                "const": "GREATER_THAN"
+              },
+              "value": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "task_key",
+          "notebook_task",
+          "max_retries",
+          "timeout_seconds"
+        ],
+        "properties": {
+          "task_key": {
+            "type": "string"
+          },
+          "notebook_task": {
+            "type": "object",
+            "required": [
+              "notebook_path",
+              "base_parameters"
+            ],
+            "properties": {
+              "notebook_path": {
+                "type": "string"
+              },
+              "base_parameters": {
+                "type": "object",
+                "required": [
+                  "step"
+                ],
+                "properties": {
+                  "step": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "max_retries": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 60
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "task_key"
+              ],
+              "properties": {
+                "task_key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "webhook_notifications": {
+      "type": "object",
+      "required": [
+        "on_failure"
+      ],
+      "properties": {
+        "on_failure": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p1_exec_v08",
+  "position": {
+    "x": 800,
+    "y": 160,
+    "z": 8000,
+    "height": 300,
+    "width": 460,
+    "tabOrder": 8000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "How to read this page. Certain = paid, adjustments and denied amounts, which are recorded facts. Estimated = pipeline and appeals, which depend on decisions not yet made. Excluded = claims held for data review. Never add Paid and Pipeline together."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

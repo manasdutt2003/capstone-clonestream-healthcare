@@ -1,0 +1,32 @@
+table dim_bucket
+	lineageTag: 6fd20c0f-a026-5a62-8fd3-b34dc48b2bb2
+
+	column 'bucket'
+		dataType: string
+		lineageTag: 6b020b88-0451-5990-9e6d-b5b3401a427c
+		summarizeBy: none
+		sourceColumn: bucket
+		sortByColumn: 'sort'
+
+	column 'sort'
+		dataType: int64
+		isHidden
+		lineageTag: f48237b5-e3ac-58b6-8ded-4a6add548ef2
+		summarizeBy: none
+		sourceColumn: sort
+
+	column 'confidence_group'
+		dataType: string
+		lineageTag: d0ffdc44-7641-5ffc-a426-68b61d859ab2
+		summarizeBy: none
+		sourceColumn: confidence_group
+
+	partition 'dim_bucket-csv' = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(CsvFolder & "\dim_bucket.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+			    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+			    Typed = Table.TransformColumnTypes(Promoted, {{"bucket", type text}, {"sort", Int64.Type}, {"confidence_group", type text}}, "en-US")
+			in
+			    Typed

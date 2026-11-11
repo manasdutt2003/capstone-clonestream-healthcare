@@ -1,0 +1,78 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p4_fin_v06",
+  "position": {
+    "x": 20,
+    "y": 520,
+    "z": 6000,
+    "height": 190,
+    "width": 700,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_pipeline_aging"
+                    }
+                  },
+                  "Property": "age"
+                }
+              },
+              "queryRef": "fact_pipeline_aging.age",
+              "nativeQueryRef": "age"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_pipeline_aging"
+                    }
+                  },
+                  "Property": "Pipeline Aging Amount"
+                }
+              },
+              "queryRef": "fact_pipeline_aging.Pipeline Aging Amount",
+              "nativeQueryRef": "Pipeline Aging Amount"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Open claims by age (estimated)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

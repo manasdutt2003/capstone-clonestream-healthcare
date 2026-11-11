@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "p4_fin_v07",
+  "position": {
+    "x": 740,
+    "y": 520,
+    "z": 7000,
+    "height": 190,
+    "width": 520,
+    "tabOrder": 7000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Confidence legend. Certain: paid, adjustment, denied. Estimated: pipeline, appeals, approved-not-yet-paid. Excluded: held for data review. The last bar of the waterfall is the automatic total and equals Paid (certain)."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

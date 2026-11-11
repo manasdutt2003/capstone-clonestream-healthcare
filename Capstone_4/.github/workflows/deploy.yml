@@ -1,0 +1,79 @@
+name: Deploy
+
+# Stages 5-6 of the six-stage pipeline (SPEC section 10).
+#   5  Approval gate : GitHub environment "production" with a required reviewer (Settings -> Environments).
+#   6  Deploy        : SIMULATED. Validates the Databricks job definitions, rebuilds every output, dry-runs
+#                      `databricks jobs create`, and publishes the results as a GitHub release.
+# It starts only after the CI workflow (stages 1-4) has succeeded on main, or when started by hand.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  stage-5-approval:
+    name: "5 - Approval gate"
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - run: echo "Approved by the required reviewer of the production environment"
+
+  stage-6-deploy:
+    name: "6 - Deploy (simulated)"
+    needs: stage-5-approval
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - name: validate the Databricks job definitions
+        run: python -m hcls.deploy.validate_jobs
+      - name: rebuild every output (sends the Slack alert summary when the SLACK_WEBHOOK_URL secret is set)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python -m hcls all
+      - name: dry-run the Databricks deploy (nothing is sent anywhere)
+        run: python -m hcls.deploy.dry_run
+      - name: collect release artefacts
+        run: |
+          mkdir release
+          cp outputs/finance/*.xlsx release/
+          cp outputs/gold/dq_scorecard.csv outputs/gold/recon_buckets.csv outputs/gold/recon_claims.csv release/
+          cp outputs/alerts.json outputs/deploy_plan.json release/
+          cp docs/03_finance_brief.md docs/04_remediation_plan.md release/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-artefacts
+          path: release
+          retention-days: 90
+      - name: publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "capstone3-build-${{ github.run_number }}" release/* \
+            --title "Capstone 3 build ${{ github.run_number }}" \
+            --notes "Simulated deploy. Commit ${{ github.sha }}. See docs/04_remediation_plan.md for the approval record."
+      - name: tell Slack the deploy succeeded
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python -m hcls notify --job capstone3-deploy --status ok --detail "Simulated deploy finished; commit ${{ github.sha }}"
+      - name: tell Slack the deploy failed
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python -m hcls notify --job capstone3-deploy --status failed --detail "Deploy stage failed; commit ${{ github.sha }}"
